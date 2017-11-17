@@ -36,7 +36,7 @@
                     return;
                 }
                 // Create a new instance of the websocket
-                webSocket = new WebSocket("ws://ps2projekt.azurewebsites.net/l8/echo/" + roomID);
+                webSocket = new WebSocket("ws://projektps2.azurewebsites.net/l8/echo/" + roomID);
                  
                 /**
                  * Binds functions to the listeners for the websocket.
