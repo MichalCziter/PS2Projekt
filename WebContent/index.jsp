@@ -18,6 +18,8 @@
             <button type="button" onclick="openSocket();" >Open</button>
             <button type="button" onclick="send();" >Send</button>
             <button type="button" onclick="closeSocket();" >Close</button>
+            <a href="test.jsp">dalej</a>
+            
         </div>
         <!-- Server responses get written here -->
         <div id="messages"></div>
@@ -37,7 +39,7 @@
                 }
                 // Create a new instance of the websocket
                 webSocket = new WebSocket("ws://localhost:8080/PS2Projekt/echo/roomnumber");
-                 
+                writeResponse("Otwarlem sie");
                 /**
                  * Binds functions to the listeners for the websocket.
                  */
@@ -66,6 +68,7 @@
             function send(){
                 var text = document.getElementById("messageinput").value;
                 webSocket.send(text);
+                
             }
            
             function closeSocket(){
