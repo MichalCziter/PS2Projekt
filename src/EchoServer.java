@@ -55,9 +55,7 @@ public class EchoServer {
             for (Session s : session.getOpenSessions()){
                 if (s.isOpen() && s.getUserProperties().get("roomnumber").equals(room)){
                     //s.getBasicRemote().sendObject(message);
-                    if(i>40) {
-                        s.getBasicRemote().sendObject("jasio");
-                    }
+
                     if(message.equals("piesek")) {
                         s.getBasicRemote().sendObject("szczeka");
                     }
