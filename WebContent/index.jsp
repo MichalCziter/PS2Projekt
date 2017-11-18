@@ -19,6 +19,7 @@
             <button type="button" onclick="send();" >Send</button>
             <button type="button" onclick="closeSocket();" >Close</button>
             <a href="test.jsp">dalej dziwko</a>
+            <a href="test.jsp">prostytutka</a>
             
         </div>
         <!-- Server responses get written here -->
