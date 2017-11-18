@@ -12,6 +12,14 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
+
+import java.sql.Connection;
+import java.sql.Statement;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.DriverManager;
+
+import com.microsoft.sqlserver.jdbc.*;
  
 
 /**
@@ -24,7 +32,19 @@ import javax.websocket.server.ServerEndpoint;
 @ServerEndpoint(value = "/echo/{roomnumber}")
 public class EchoServer {
     int i =0;
+
+
+    String hostName = "malarzeserwer.database.windows.net";
+    String dbName = "malarzeBaza";
+    String user = "maras314";
+    String password = "malarze314Y";
+    String url = String.format("jdbc:sqlserver://%s:1433;database=%s;user=%s;password=%s;encrypt=true;hostNameInCertificate=*.database.windows.net;loginTimeout=30;", hostName, dbName, user, password);
+    Connection connection = null;
+
+
     /**
+     * @throws EncodeException 
+     * @throws IOException 
      * @OnOpen allows us to intercept the creation of a new session.
      * The session class allows us to send data to the user.
      * In the method onOpen, we'll let the user know that the handshake was
@@ -33,11 +53,58 @@ public class EchoServer {
  
    
     @OnOpen
-    public void onOpen(Session session, @PathParam("roomnumber") String roomnumber){
+    public void onOpen(Session session, @PathParam("roomnumber") String roomnumber) throws IOException, EncodeException{
         System.out.println(session.getId() + " has opened a connection");
-            session.getUserProperties().put("roomnumber", roomnumber);
-            SessionHandler.openSessions.put(String.valueOf(session.getId()), session);
+        System.out.println("ok1");    
+        session.getUserProperties().put("roomnumber", roomnumber);
+        System.out.println("ok2");    
+           // SessionHandler.openSessions.put(String.valueOf(session.getId()), session);
+            System.out.println("ok3");
             SessionHandler.addSession(session);
+
+            System.out.println("ok4");
+            
+            session.getBasicRemote().sendObject("szczeka");
+            System.out.println("ok5");
+            
+            try {
+            	int licznik = 1;
+                session.getBasicRemote().sendText("Connection Established");
+       
+                	Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+                    connection = DriverManager.getConnection(url);
+                    String schema = connection.getSchema();
+                    System.out.println("Successful connection - Schema: " + schema);
+                    SessionHandler.sendToSession(session, "LATA");
+                    String selectSql = "SELECT *  FROM dbo.Malarze";
+                    SessionHandler.sendToSession(session, selectSql);
+                    
+                    Statement statement = connection.createStatement();
+                    
+                	ResultSet resultSet = statement.executeQuery(selectSql);
+                	
+                	while (resultSet.next())
+                    {
+                        System.out.println(resultSet.getString(1) + " "
+                            + resultSet.getString(2) + " "
+                                    + resultSet.getString(3) + " "
+                                           + resultSet.getString(5) + " "
+                                                            + resultSet.getString(6));
+                    }
+             connection.close();
+
+
+
+                    
+
+                    
+            }
+                catch (Exception e) {
+                    e.printStackTrace();
+                    SessionHandler.sendToSession(session, "Lipa");
+                }
+
+
             
             
     }
