@@ -2,15 +2,17 @@
  
 <html>
     <head>
-        <title>EchoLeon</title>
+        <title>Echo Chamber</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width">
     </head>
     <body>
        
         <div>
-            Room ID: <input type="text" id="roomID"/><br>
-            Message: <input type="text" id="messageinput"/>
+            Room ID:<input type="text" id="roomnumber"/>
+        </div>
+        <div>
+            Message :<input type="text" id="messageinput"/>
         </div>
         <div>
             <button type="button" onclick="openSocket();" >Open</button>
@@ -25,18 +27,16 @@
                        
             var webSocket;
             var messages = document.getElementById("messages");
-            var roomID;
            
            
             function openSocket(){
                 // Ensures only one connection is open at a time
-                roomID = document.getElementById("roomID").value;
                 if(webSocket !== undefined && webSocket.readyState !== WebSocket.CLOSED){
                    writeResponse("WebSocket is already opened.");
                     return;
                 }
                 // Create a new instance of the websocket
-                webSocket = new WebSocket("ws://projektps2.azurewebsites.net:8080/l8/echo/" + roomID);
+                webSocket = new WebSocket("ws://localhost:8080/PS2Projekt/echo/roomnumber");
                  
                 /**
                  * Binds functions to the listeners for the websocket.
