@@ -38,6 +38,8 @@ public class EchoServer {
             session.getUserProperties().put("roomnumber", roomnumber);
             SessionHandler.openSessions.put(String.valueOf(session.getId()), session);
             SessionHandler.addSession(session);
+            SessionHandler.sendToSession(session, "LATA");
+            
     }
  
     /**
