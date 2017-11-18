@@ -5,6 +5,9 @@
         <title>Echo Chamber</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width">
+          <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     </head>
     <body>
        
@@ -20,6 +23,15 @@
             <button type="button" onclick="closeSocket();" >Close</button>
             <a href="test.jsp">dalej dziwko</a>
             <a href="test.jsp">prostytutka</a>
+            <div class="dropdown">
+  <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Dropdown Example
+  <span class="caret"></span></button>
+  <ul class="dropdown-menu">
+    <li><a href="#">HTML</a></li>
+    <li><a href="#">CSS</a></li>
+    <li><a href="#">JavaScript</a></li>
+  </ul>
+</div>
             
         </div>
         <!-- Server responses get written here -->
