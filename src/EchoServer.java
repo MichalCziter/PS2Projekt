@@ -20,6 +20,9 @@ import java.sql.ResultSet;
 import java.sql.DriverManager;
 
 import com.microsoft.sqlserver.jdbc.*;
+
+
+
  
 
 /**
@@ -40,6 +43,10 @@ public class EchoServer {
     String password = "malarze314Y";
     String url = String.format("jdbc:sqlserver://%s:1433;database=%s;user=%s;password=%s;encrypt=true;hostNameInCertificate=*.database.windows.net;loginTimeout=30;", hostName, dbName, user, password);
     Connection connection = null;
+    public static final String storageConnectionString =
+    	    "DefaultEndpointsProtocol=http;" +
+    	    "AccountName=your_storage_account;" +
+    	    "AccountKey=your_storage_account_key";
 
 
     /**
@@ -103,6 +110,7 @@ public class EchoServer {
                     e.printStackTrace();
                     SessionHandler.sendToSession(session, "Lipa");
                 }
+            
 
 
             
