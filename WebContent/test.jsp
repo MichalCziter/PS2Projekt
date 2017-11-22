@@ -1,40 +1,48 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <title>Bootstrap Example</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-</head>
-<body>
+<%@ page import="java.sql.*" %>
+<%@ page import="com.microsoft.sqlserver.jdbc.*" %>
+<%ResultSet resultset =null;%>
 
-<div class="jumbotron text-center">
-<a href="index.jsp">wracaj pedale</a>
-  <h1>My First Bootstrap Page</h1>
-  <p>Resize this responsive page to see the effect!</p> 
-</div>
-  
-<div class="container">
-  <div class="row">
-    <div class="col-sm-4">
-      <h3>Column 1</h3>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit...</p>
-      <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris...</p>
-    </div>
-    <div class="col-sm-4">
-      <h3>Column 2</h3>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit...</p>
-      <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris...</p>
-    </div>
-    <div class="col-sm-4">
-      <h3>Column 3</h3>        
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit...</p>
-      <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris...</p>
-    </div>
-  </div>
-</div>
+<HTML>
+<HEAD>
+    <TITLE>Select element drop down box</TITLE>
+</HEAD>
 
-</body>
-</html>
+<BODY BGCOLOR=##f89ggh>
+
+<%
+    try{
+//Class.forName("com.mysql.jdbc.Driver").newInstance();
+
+String hostName = "malarzeserwer.database.windows.net";
+String dbName = "malarzeBaza";
+String user = "maras314";
+String password = "malarze314Y";
+String url = String.format("jdbc:sqlserver://%s:1433;database=%s;user=%s;password=%s;encrypt=true;hostNameInCertificate=*.database.windows.net;loginTimeout=30;", hostName, dbName, user, password);
+Connection connection = null;   
+connection = DriverManager.getConnection(url);
+
+Statement statement = connection.createStatement() ;
+
+       resultset =statement.executeQuery("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_CATALOG='malarzeBaza'") ;
+%>
+
+<center>
+    <h1> Drop down box or select element</h1>
+        <select>
+        <%  while(resultset.next()){ %>
+            <option><%= resultset.getString(1)%></option>
+        <% } %>
+        </select>
+</center>
+
+<%
+//**Should I input the codes here?**
+        }
+        catch(Exception e)
+        {
+             out.println("wrong entry"+e);
+        }
+%>
+
+</BODY>
+</HTML>

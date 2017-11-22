@@ -43,10 +43,7 @@ public class EchoServer {
     String password = "malarze314Y";
     String url = String.format("jdbc:sqlserver://%s:1433;database=%s;user=%s;password=%s;encrypt=true;hostNameInCertificate=*.database.windows.net;loginTimeout=30;", hostName, dbName, user, password);
     Connection connection = null;
-    public static final String storageConnectionString =
-    	    "DefaultEndpointsProtocol=http;" +
-    	    "AccountName=your_storage_account;" +
-    	    "AccountKey=your_storage_account_key";
+
 
 
     /**
@@ -74,42 +71,7 @@ public class EchoServer {
             session.getBasicRemote().sendObject("szczeka");
             System.out.println("ok5");
             
-            try {
-            	int licznik = 1;
-                session.getBasicRemote().sendText("Connection Established");
-       
-                	Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-                    connection = DriverManager.getConnection(url);
-                    String schema = connection.getSchema();
-                    System.out.println("Successful connection - Schema: " + schema);
-                    SessionHandler.sendToSession(session, "LATA");
-                    String selectSql = "SELECT *  FROM dbo.Malarze";
-                    SessionHandler.sendToSession(session, selectSql);
-                    
-                    Statement statement = connection.createStatement();
-                    
-                	ResultSet resultSet = statement.executeQuery(selectSql);
-                	
-                	while (resultSet.next())
-                    {
-                        System.out.println(resultSet.getString(1) + " "
-                            + resultSet.getString(2) + " "
-                                    + resultSet.getString(3) + " "
-                                           + resultSet.getString(5) + " "
-                                                            + resultSet.getString(6));
-                    }
-             connection.close();
-
-
-
-                    
-
-                    
-            }
-                catch (Exception e) {
-                    e.printStackTrace();
-                    SessionHandler.sendToSession(session, "Lipa");
-                }
+            GetTableNames.getNames(connection, url, session);
             
 
 
