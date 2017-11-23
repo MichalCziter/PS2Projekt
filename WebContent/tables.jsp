@@ -1,6 +1,5 @@
 <%@ page import="java.sql.*" %>
 <%@ page import="com.microsoft.sqlserver.jdbc.*" %>
-<%@ page import="java.io.IOException;" %>
 <%ResultSet resultset = null;%>
 
 <HTML>
@@ -16,7 +15,6 @@
 
 <BODY BGCOLOR=##f89ggh>
 <div>
-
 
 <%
     try{
@@ -36,51 +34,14 @@ Statement statement = connection.createStatement() ;
        resultset =statement.executeQuery("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_CATALOG='malarzeBaza'") ;
 %>
 
-<left>
-    <h1> Wybierz tabele</h1>
-        <select id="wybor">
-        <%  
-        int l = 1;
-        while(resultset.next()){ %>
-        var i = 1;
-            <option value=""+i><%= resultset.getString(1)%></option>
-			i++;
-        <% } %>
-        </select>
-            <input type="submit" value="click"> 
-            
-        <select id="wybor2">
 
-            <option value="1">janek</option>
-            <option value="2">dzbanek</option>
-
-        </select>
-            
-        
-</left>
-<center>
-
-
-
-<button type="button" onclick="getZawartosc()">Basic</button>
-
-<%
-
-int i = 1;
-String adres = "dupa";
-
-%>
-
-
-
-<input type="button" onclick="location.href='tables.jsp?choose=<%= adres%>'" value="Go to Google" />
-<a href="tables.jsp?choose=<%= adres%>">TABLES</a>
-
-</center>
 <right>
+
+
 	<%
 	resultset =statement.executeQuery("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'Malarze'") ;
 	%>
+	<br><br><br>
 	  <div class="table-responsive">          
   <table class="table">
     <thead>
@@ -93,7 +54,9 @@ String adres = "dupa";
       </tr>
     </thead>
     	<%
-	resultset =statement.executeQuery("SELECT * FROM dbo.Malarze") ;
+    	String wybranaTabela = request.getParameter("choose");
+    	System.out.println(wybranaTabela);
+	resultset =statement.executeQuery("SELECT * FROM dbo." + wybranaTabela) ;
 	%>
     <tbody>
           <% while(resultset.next()){ %>
@@ -111,6 +74,8 @@ String adres = "dupa";
     </tbody>
   </table>
   </div>
+  
+  <a href="test.jsp">powrot</a>
 
 </right>
 </div>
@@ -120,37 +85,9 @@ String adres = "dupa";
 <script type="text/javascript">
 var messages = document.getElementById("messages");
 
-var e = document.getElementById("wybor");
-var strUser = e.options[e.selectedIndex].text;
-
 function getZawartosc() {
 	
-    <%resultset =statement.executeQuery("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_CATALOG='malarzeBaza'") ;
-%>
-<% while(resultset.next()){ %>
-<% String str=resultset.getString(1);
-System.out.println(resultset.getString(1));
-%>
-<%}%>
 
-
-
-
-
-	e = document.getElementById("wybor");
-	strUser = e.options[e.selectedIndex].text;
-
-	
-    if(strUser == "Malarze"){
-        alert("DOBRZE"); 
-    }
-    else {
-    	alert("dupa");
-    }
-    
-    window.location = "http://localhost:8080/PS2Projekt/tables.jsp?choose=" + strUser;
-    
-	
 
 }
 
