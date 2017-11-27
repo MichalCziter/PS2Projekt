@@ -50,7 +50,7 @@
                     return;
                 }
                 // Create a new instance of the websocket
-                webSocket = new WebSocket("ws://localhost:8080/PS2Projekt/echo/roomnumber");
+                webSocket = new WebSocket("ws://kapustatest.azurewebsites.net/PS2Projekt/echo/roomnumber");
                 writeResponse("Otwarlem sie");
                 /**
                  * Binds functions to the listeners for the websocket.

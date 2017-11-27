@@ -92,6 +92,7 @@ public class EchoServer {
             for (Session s : session.getOpenSessions()){
                 if (s.isOpen() && s.getUserProperties().get("roomnumber").equals(room)){
                     //s.getBasicRemote().sendObject(message);
+                    SessionHandler.sendToallConnectedSessionsInRoom(room, message);
 
                     if(message.equals("piesek")) {
                         s.getBasicRemote().sendObject("szczeka");
