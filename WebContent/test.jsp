@@ -154,6 +154,10 @@ System.out.println(resultset.getString(1));
 
 }
 
+
+
+
+
 function writeResponse(text){
     messages.innerHTML += "<br/>" + text;
 }

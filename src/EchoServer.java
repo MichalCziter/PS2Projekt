@@ -68,7 +68,7 @@ public class EchoServer {
 
             System.out.println("ok4");
             
-            session.getBasicRemote().sendObject("szczeka");
+            //session.getBasicRemote().sendObject("szczeka");
             System.out.println("ok5");
             
             GetTableNames.getNames(connection, url, session);

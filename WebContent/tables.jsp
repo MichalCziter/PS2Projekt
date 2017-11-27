@@ -59,8 +59,12 @@ Statement statement = connection.createStatement() ;
 	resultset =statement.executeQuery("SELECT * FROM dbo." + wybranaTabela) ;
 	%>
     <tbody>
-          <% while(resultset.next()){ %>
+          <%int i =1; 
+          while(resultset.next()){ %>
       <tr>
+      
+      <%System.out.println("<td>"+resultset.getString(i)+"</td>");
+      i++; %>
 
         <td><%= resultset.getString(1)%></td>
         <td><%= resultset.getString(2)%></td>
