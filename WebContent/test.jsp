@@ -73,7 +73,7 @@ String adres = "dupa";
 
 
 
-<input type="button" onclick="location.href='tables.jsp?choose=<%= adres%>'" value="Go to Google" />
+<input type="button" onclick="location.href='tables.jsp?choose=<%= adres%>'" value="Go to Tables" />
 <a href="tables.jsp?choose=<%= adres%>">TABLES</a>
 
 </center>
