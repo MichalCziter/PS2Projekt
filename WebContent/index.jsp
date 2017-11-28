@@ -80,7 +80,7 @@
              * Sends the value of the text input to the server
              */
             function send(){
-                var text = document.getElementById("messageinput").value;
+                //var text = document.getElementById("messageinput").value;
                 webSocket.send(text);
                 
                 
