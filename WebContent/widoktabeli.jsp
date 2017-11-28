@@ -11,6 +11,7 @@
           <script type="text/javascript">
         window.onload = function openSocket(){
             // Ensures only one connection is open at a time
+            
             if(webSocket !== undefined && webSocket.readyState !== WebSocket.CLOSED){
                writeResponse("WebSocket is already opened.");
                 return;
@@ -18,10 +19,12 @@
             // Create a new instance of the websocket
             webSocket = new WebSocket("ws://localhost:8080/PS2Projekt/echo/roomnumber");
             //webSocket = new WebSocket("ws://kapustatest.azurewebsites.net/PS2Projekt/echo/roomnumber");
+             
             writeResponse("Otwarlem sie");
             /**
              * Binds functions to the listeners for the websocket.
              */
+             
             webSocket.onopen = function(event){
                 // For reasons I can't determine, onopen gets called twice
                 // and the first time event.data is undefined.
@@ -30,6 +33,7 @@
                     return;
 
                 writeResponse(event.data);
+               
             };
 
             webSocket.onmessage = function(event){
@@ -42,6 +46,15 @@
             };
             
             
+        }
+        function poprosTabele(){
+        	var myParam = location.search.split('choose=')[1]
+        	var text = myParam;
+			
+        	writeResponse(text + "Dziala xDDdD")
+            webSocket.send(text);
+        	
+        	
         }
         </script>
     </head>
@@ -118,7 +131,7 @@
                 	alert("dupa");
                 }
                 
-                window.location = "http://localhost:8080/PS2Projekt/widoktabeli.jsp?choose=" + strUser;
+                window.location = "http://localhost:8080/PS2Projekt/tables.jsp?choose=" + strUser;
 
                 closeSocket();
             }

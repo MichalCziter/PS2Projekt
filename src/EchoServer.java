@@ -24,6 +24,7 @@ import org.json.*;
 
 
 
+
  
 
 /**
@@ -35,9 +36,9 @@ import org.json.*;
  */
 @ServerEndpoint(value = "/echo/{roomnumber}")
 public class EchoServer {
-    int i =0;
 
 
+	
     String hostName = "malarzeserwer.database.windows.net";
     String dbName = "malarzeBaza";
     String user = "maras314";
@@ -72,8 +73,8 @@ public class EchoServer {
             //session.getBasicRemote().sendObject("szczeka");
             System.out.println("ok5");
             
-            GetTableNames.getNames(connection, url, session);
-            
+            //GetTableNames.getNames(connection, url, session);
+
             
 
 
@@ -87,7 +88,7 @@ public class EchoServer {
      */
     @OnMessage
     public void onMessage(String message, Session session){
-        i++;
+
 
         String room = (String) session.getUserProperties().get("roomnumber");
         try{
@@ -107,19 +108,55 @@ public class EchoServer {
 
                             String selectSql = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_CATALOG='malarzeBaza'";
                             //wypisanie komendy sql do okna przegladarki
-                            SessionHandler.sendToSession(session, selectSql);
+                            //SessionHandler.sendToSession(session, selectSql);
                             
                             Statement statement = connection.createStatement();
                             
                         	ResultSet resultSet = statement.executeQuery(selectSql);
-                        	                       	
-                        	while (resultSet.next())
-                            {
-                                System.out.println(resultSet.getString(1));
-                                SessionHandler.sendToallConnectedSessionsInRoom(room, resultSet.getString(1));
-
-                            }
                         	
+                        	
+                        	                       	
+                        	//while (resultSet.next())
+                            //{
+                                //System.out.println(resultSet.getString(1));
+                                
+                                //System.out.println(split.length);
+                                
+                                
+                                //SessionHandler.sendToallConnectedSessionsInRoom(room, split[1]);
+                                //SessionHandler.sendToallConnectedSessionsInRoom(room, resultSet.getString(1));
+
+
+                            //}
+                            //String split[] = resultSet.getString(1);
+                        	
+                        	JSONObject cos = new JSONObject();
+                        	cos.put("dzialanie", "tabele");
+                        	String licznik;
+                        	
+                            int i = 0;
+                            String arr[] = new String[50];
+                            while (resultSet.next()) {
+                                String em = resultSet.getString(1);
+                                arr[i] = em;
+                                licznik= "tabela" + String.valueOf(i);
+                                //System.out.println(arr);
+                            	//System.out.println(em);
+                            	cos.put(licznik, em);
+                                i++;
+                                
+                            }
+                            
+                            System.out.println(cos.toString());
+                            // 0 - malarze , 1 - obrazy
+                            
+                            
+                            
+                            //String tab[] = arr;
+                            
+                            SessionHandler.sendToallConnectedSessionsInRoom(room, cos.toString());
+
+                            
                         	
                         	
                 			}
