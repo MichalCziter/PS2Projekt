@@ -17,18 +17,18 @@
         <div>
             Message :<input type="text" id="messageinput"/>
         </div>
+        <div id="wybor">
+        	
+        </div>
         <div>
             <button type="button" onclick="openSocket();" >Open</button>
             <button type="button" onclick="send();" >Send</button>
             <button type="button" onclick="closeSocket();" >Close</button>
+            <button type="button" onclick="pobierzNazwy();" >Pobieranie</button>
             <a href="test.jsp">dalej dziwko</a>
             <a href="test.jsp">prostytutka</a>
             <div class="dropdown">
-<select class="selectpicker">
-  <option>Mustard</option>
-  <option>Ketchup</option>
-  <option>Relish</option>
-</select>
+
 
 </div>
             
@@ -72,6 +72,8 @@
                 webSocket.onclose = function(event){
                     writeResponse("Connection closed");
                 };
+                
+                
             }
            
             /**
@@ -81,6 +83,7 @@
                 var text = document.getElementById("messageinput").value;
                 webSocket.send(text);
                 
+                
             }
            
             function closeSocket(){
@@ -89,6 +92,11 @@
  
             function writeResponse(text){
                 messages.innerHTML += "<br/>" + text;
+            }
+            
+            function pobierzNazwy(){
+            	var text = "Pobierz"
+            	webSocket.send(text);
             }
            
         </script>

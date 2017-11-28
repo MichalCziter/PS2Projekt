@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
+<script src="require.js"></script>
 </HEAD>
 
 <BODY BGCOLOR=##f89ggh>
@@ -80,6 +80,7 @@ Statement statement = connection.createStatement() ;
   </div>
   
   <a href="test.jsp">powrot</a>
+  <button type="button" onclick="getZawartosc()">Basic</button>
 
 </right>
 </div>
@@ -90,7 +91,53 @@ Statement statement = connection.createStatement() ;
 var messages = document.getElementById("messages");
 
 function getZawartosc() {
+	var Connection = require(['tedious']).Connection;
+	var Request = require(['tedious']).Request;
+
+	// Create connection to database
+	var config = 
+	   {
+	     userName: 'maras314', // update me
+	     password: 'malarze314Y', // update me
+	     server: 'malarzeserwer.database.windows.net', // update me
+	     options: 
+	        {
+	           database: 'malarzeBaza' //update me
+	           , encrypt: true
+	        }
+	   }
+	var connection = new Connection(config);
+
+	// Attempt to connect and execute queries if connection goes through
+	connection.on('connect', function(err) 
+	   {
+	     if (err) 
+	       {
+	          console.log(err)
+	       }
+	    else
+	       {
+	           queryDatabase()
+	       }
+	   }
+	 );
 	
+    // Read all rows from table
+    request = new Request(
+         "SELECT * FROM dbo.Malarze",
+            function(err, rowCount, rows) 
+               {
+                   console.log(rowCount + ' row(s) returned');
+                   process.exit();
+               }
+           );
+
+    request.on('row', function(columns) {
+       columns.forEach(function(column) {
+           console.log("%s\t%s", column.metadata.colName, column.value);
+        });
+            });
+    connection.execSql(request);
 
 
 }

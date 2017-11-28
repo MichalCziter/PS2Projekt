@@ -47,14 +47,9 @@ Statement statement = connection.createStatement() ;
 			i++;
         <% } %>
         </select>
-            <input type="submit" value="click"> 
+<button type="button" onclick="getZawartosc()">Przejdz</button> 
             
-        <select id="wybor2">
 
-            <option value="1">janek</option>
-            <option value="2">dzbanek</option>
-
-        </select>
             
         
 </left>
@@ -62,7 +57,7 @@ Statement statement = connection.createStatement() ;
 
 
 
-<button type="button" onclick="getZawartosc()">Basic</button>
+
 
 <%
 
@@ -73,44 +68,14 @@ String adres = "dupa";
 
 
 
-<input type="button" onclick="location.href='tables.jsp?choose=<%= adres%>'" value="Go to Google" />
-<a href="tables.jsp?choose=<%= adres%>">TABLES</a>
+
 
 </center>
 <right>
 	<%
 	resultset =statement.executeQuery("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'Malarze'") ;
 	%>
-	  <div class="table-responsive">          
-  <table class="table">
-    <thead>
 
-      <tr>
-          <% while(resultset.next()){ %>
-        <th><%= resultset.getString(4)%></th>
-
-        <% } %>
-      </tr>
-    </thead>
-    	<%
-	resultset =statement.executeQuery("SELECT * FROM dbo.Malarze") ;
-	%>
-    <tbody>
-          <% while(resultset.next()){ %>
-      <tr>
-
-        <td><%= resultset.getString(1)%></td>
-        <td><%= resultset.getString(2)%></td>
-        <td><%= resultset.getString(3)%></td>
-        <td><%= resultset.getString(4)%></td>
-        <td><%= resultset.getString(5)%></td>
-        <td><%= resultset.getString(6)%></td>
-
-        <% } %>
-      </tr>
-    </tbody>
-  </table>
-  </div>
 
 </right>
 </div>

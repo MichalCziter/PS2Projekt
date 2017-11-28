@@ -38,17 +38,27 @@ public class GetTableNames {
             	selectSql = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_CATALOG='malarzeBaza'";
 
             	resultSet = statement.executeQuery(selectSql);
+            	//String[] rezulty = new String[10];
+            	//int i = 1;
             	
             	while (resultSet.next())
                 {
+            		//rezulty[i] = resultSet.getString(i);
                     System.out.println(resultSet.getString(1));
+            		//System.out.println(rezulty[i]);
+            		//System.out.println("dupa");
+            		//i++;
                 }
+            	
+            	
             	
 	}
 		 catch (Exception e) {
              e.printStackTrace();
              SessionHandler.sendToSession(session, "Lipa");
          }
+		
+		
 		
 	
 

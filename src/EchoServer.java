@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.sql.DriverManager;
 
 import com.microsoft.sqlserver.jdbc.*;
+import org.json.*;
 
 
 
@@ -73,6 +74,7 @@ public class EchoServer {
             
             GetTableNames.getNames(connection, url, session);
             
+            
 
 
             
@@ -94,8 +96,40 @@ public class EchoServer {
                     //s.getBasicRemote().sendObject(message);
                     SessionHandler.sendToallConnectedSessionsInRoom(room, message);
 
-                    if(message.equals("piesek")) {
-                        s.getBasicRemote().sendObject("szczeka");
+                    if(message.equals("Pobierz")) {
+                    	////////////////////////////////////////////////////////////////////
+                		try {
+                			   
+                        	Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+                            connection = DriverManager.getConnection(url);
+                            String schema = connection.getSchema();
+                            System.out.println("Successful connection - Schema: " + schema);
+
+                            String selectSql = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_CATALOG='malarzeBaza'";
+                            //wypisanie komendy sql do okna przegladarki
+                            SessionHandler.sendToSession(session, selectSql);
+                            
+                            Statement statement = connection.createStatement();
+                            
+                        	ResultSet resultSet = statement.executeQuery(selectSql);
+                        	                       	
+                        	while (resultSet.next())
+                            {
+                                System.out.println(resultSet.getString(1));
+                                SessionHandler.sendToallConnectedSessionsInRoom(room, resultSet.getString(1));
+
+                            }
+                        	
+                        	
+                        	
+                			}
+            		 catch (Exception e) {
+                         e.printStackTrace();
+                         SessionHandler.sendToSession(session, "Lipa");
+                     }
+                    	///////////////////////////////////////////////////////////////////
+                    	
+                    	//SessionHandler.sendToallConnectedSessionsInRoom(room, message);
                     }
                     else {
                         s.getBasicRemote().sendObject(message);
@@ -107,6 +141,9 @@ public class EchoServer {
            
         }
     }
+    
+
+    
  
     /**
      * The user closes the connection.
