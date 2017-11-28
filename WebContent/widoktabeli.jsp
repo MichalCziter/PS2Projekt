@@ -9,7 +9,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
           <script type="text/javascript">
-        window.onload = function openSocket(){
+        function openSocket(){
             // Ensures only one connection is open at a time
             
             if(webSocket !== undefined && webSocket.readyState !== WebSocket.CLOSED){
@@ -20,7 +20,7 @@
             webSocket = new WebSocket("ws://localhost:8080/PS2Projekt/echo/roomnumber");
             //webSocket = new WebSocket("ws://kapustatest.azurewebsites.net/PS2Projekt/echo/roomnumber");
              
-            writeResponse("Otwarlem sie");
+            writeResponse("Otwarlem sie WIDOKTABELI");
             /**
              * Binds functions to the listeners for the websocket.
              */
@@ -48,13 +48,26 @@
             
         }
         function poprosTabele(){
-        	var myParam = location.search.split('choose=')[1]
+        	var myParam = location.search.split('choose=')[1];
         	var text = myParam;
+        	
+        	var obj = new Object();
+        	obj.dzialanie = "Tabela";
+        	obj.tabela = text;
+        	var jsonString= JSON.stringify(obj);
 			
-        	writeResponse(text + "Dziala xDDdD")
-            webSocket.send(text);
+        	writeResponse(jsonString + "Dziala xDDdD");
+            webSocket.send(jsonString);
+        	writeResponse("POSZLO");
         	
         	
+        }
+        window.onload = function(){
+        	openSocket();
+        	//var obj = poprosTabele();
+        	//webSocket.send(obj);
+			
+        	//poprosTabele();
         }
         </script>
     </head>
@@ -67,6 +80,8 @@
         	
         </div>
         <div>
+        	<button type="button" onclick="poprosTabele();" >KLIKAJ TUTAJ</button>
+        	
             <button type="button" onclick="pobierzNazwy();" >Pobierz Tabele</button>
             <button type="button" onclick="pokazZawartosc();" >Pokaz Zawartosc tabeli</button>
 
@@ -77,6 +92,8 @@
         </div>
         <!-- Server responses get written here -->
         <div id="messages"></div>
+        
+        <div id="showData"></div>
        
         <!-- Script to utilise the WebSocket -->
         <script type="text/javascript">
@@ -114,6 +131,52 @@
 
             		frag.appendChild(select);
             		div.appendChild(frag);
+            		
+            	}
+            	if(json.dzialanie == "wysylamTabele"){
+            		
+            		writeResponse("dupa");
+            		var myBooks = json.Tabela;
+            		console.log(myBooks);
+            		//wypisuje dobrze do loga, ale nie mozna wystwietlic na stronie bo pokazuje object
+            		//tworzymy tabele
+            		    var col = [];
+				        for (var i = 0; i < myBooks.length; i++) {
+				            for (var key in myBooks[i]) {
+				                if (col.indexOf(key) === -1) {
+				                    col.push(key);
+				                }
+				            }
+				        }
+				        // CREATE DYNAMIC TABLE.
+				        var table = document.createElement("table");
+
+				        // CREATE HTML TABLE HEADER ROW USING THE EXTRACTED HEADERS ABOVE.
+
+				        var tr = table.insertRow(-1);                   // TABLE ROW.
+
+				        for (var i = 0; i < col.length; i++) {
+				            var th = document.createElement("th");      // TABLE HEADER.
+				            th.innerHTML = col[i];
+				            tr.appendChild(th);
+				        }
+
+				        // ADD JSON DATA TO THE TABLE AS ROWS.
+				        for (var i = 0; i < myBooks.length; i++) {
+
+				            tr = table.insertRow(-1);
+
+				            for (var j = 0; j < col.length; j++) {
+				                var tabCell = tr.insertCell(-1);
+				                tabCell.innerHTML = myBooks[i][col[j]];
+				            }
+				        }
+
+				        // FINALLY ADD THE NEWLY CREATED TABLE WITH JSON DATA TO A CONTAINER.
+				        var divContainer = document.getElementById("showData");
+				        divContainer.innerHTML = "";
+				        divContainer.appendChild(table);
+            		
             		
             	}
             	

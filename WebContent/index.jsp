@@ -134,7 +134,12 @@
             function pobierzNazwy(){
             	alert('o');
             	var text = "Pobierz"
-            	webSocket.send(text);
+            	var obj = new Object();
+             	obj.dzialanie = "Pobierz";
+            	var jsonString= JSON.stringify(obj);
+            	writeResponse(jsonString);
+            	webSocket.send(jsonString);
+            	//webSocket.send(text);
             }
            
         </script>

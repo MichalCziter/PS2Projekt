@@ -56,15 +56,15 @@ Statement statement = connection.createStatement() ;
     	<%
     	String wybranaTabela = request.getParameter("choose");
     	System.out.println(wybranaTabela);
-	resultset =statement.executeQuery("SELECT * FROM dbo." + wybranaTabela) ;
+	//resultset =statement.executeQuery("SELECT * FROM dbo." + wybranaTabela) ;
+	resultset =statement.executeQuery("SELECT * FROM dbo.Malarze") ;
 	%>
     <tbody>
           <%int i =1; 
           while(resultset.next()){ %>
       <tr>
       
-      <%System.out.println("<td>"+resultset.getString(i)+"</td>");
-      i++; %>
+
 
         <td><%= resultset.getString(1)%></td>
         <td><%= resultset.getString(2)%></td>

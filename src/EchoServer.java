@@ -17,6 +17,7 @@ import java.sql.Connection;
 import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.DriverManager;
 
 import com.microsoft.sqlserver.jdbc.*;
@@ -85,10 +86,17 @@ public class EchoServer {
     /**
      * When a user sends a message to the server, this method will intercept the message
      * and allow us to react to it. For now the message is read as a String.
+     * @throws JSONException 
      */
     @OnMessage
-    public void onMessage(String message, Session session){
-
+    public void onMessage(String message, Session session) throws JSONException{
+    	
+    	JSONObject jsonObj = new JSONObject(message);
+    	System.out.println("ODEBRANE SPRAWDZAM");
+    	System.out.println(message);
+    	System.out.println("SPRAWDZAM JSON");
+    	System.out.println(jsonObj);
+    	String proszedzialaj = jsonObj.getString("dzialanie");
 
         String room = (String) session.getUserProperties().get("roomnumber");
         try{
@@ -97,7 +105,10 @@ public class EchoServer {
                     //s.getBasicRemote().sendObject(message);
                     SessionHandler.sendToallConnectedSessionsInRoom(room, message);
 
-                    if(message.equals("Pobierz")) {
+                    
+                    if(proszedzialaj.equals("Pobierz")) {
+                    //if(message.equals("Pobierz")) {
+                    //if(jsonObj.getJSONObject("dzialanie").equals("Pobierz")) {
                     	////////////////////////////////////////////////////////////////////
                 		try {
                 			   
@@ -167,6 +178,111 @@ public class EchoServer {
                     	///////////////////////////////////////////////////////////////////
                     	
                     	//SessionHandler.sendToallConnectedSessionsInRoom(room, message);
+                    }
+                    if(proszedzialaj.equals("Tabela")) {
+                    	try {
+             			   
+                        	Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+                            connection = DriverManager.getConnection(url);
+                            String schema = connection.getSchema();
+                            System.out.println("Successful connection - Schema: " + schema);
+                            String wybranaTabela = jsonObj.getString("tabela");
+
+                            String selectSql = "SELECT * FROM dbo." + wybranaTabela;
+                            //wypisanie komendy sql do okna przegladarki
+                            //SessionHandler.sendToSession(session, selectSql);
+                            
+                            Statement statement = connection.createStatement();
+                            
+                        	ResultSet resultSet = statement.executeQuery(selectSql);
+                        	ResultSetMetaData rsmd = resultSet.getMetaData();
+
+                        	int columnsNumber = rsmd.getColumnCount();
+                        	String columnName[]=new String[10];
+                        	for(int k=1;k<columnsNumber+1;k++) {
+                        		columnName[k] = rsmd.getColumnName(k);
+                        	}
+                        	
+                        	
+                        	System.out.println(columnsNumber);
+                        	                       	
+                        	//while (resultSet.next())
+                            //{
+                                //System.out.println(resultSet.getString(1));
+                                
+                                //System.out.println(split.length);
+                                
+                                
+                                //SessionHandler.sendToallConnectedSessionsInRoom(room, split[1]);
+                                //SessionHandler.sendToallConnectedSessionsInRoom(room, resultSet.getString(1));
+
+
+                            //}
+                            //String split[] = resultSet.getString(1);
+                        	
+                        	
+                        	JSONArray tablicaCos = new JSONArray();
+                        	JSONObject mainObj = new JSONObject();
+                        	//cos.put("dzialanie", "wysylamTabele");
+                        	String licznik = " ";
+                        	String test[] = new String[500];
+                        	
+                            //int i = 0;
+                        	int i = 1;
+                            int j = 1;
+                            
+                            String arr[][] = new String[100][100];
+                            
+                            while (resultSet.next()) {
+                            	JSONObject cos = new JSONObject();
+                            	//licznik= columnName[i];
+
+                            	
+                            	for(j=1;j<columnsNumber+1;j++) {
+                            		
+                            		
+                            		arr[i][j] = resultSet.getString(j);
+                            		licznik= columnName[j];
+                            		cos.put(licznik, arr[i][j]);
+                            		
+                                	//System.out.print(resultSet.getString(j));
+                                	
+
+                            		
+                            	}
+                            	tablicaCos.put(cos);
+                                //String em = resultSet.getString(1);
+                                //arr[i] = em;
+                                //licznik= "tabela" + String.valueOf(i);
+                                //System.out.println(arr);
+                            	//System.out.println(em);
+                            	//cos.put(licznik, arr[i]);
+                                i++;
+                                
+                            }
+
+                            
+                            mainObj.put("dzialanie", "wysylamTabele");
+                            mainObj.put("Tabela", tablicaCos);
+                            
+                            System.out.println(mainObj.toString());
+                            // 0 - malarze , 1 - obrazy
+                            
+                            
+                            
+                            //String tab[] = arr;
+                            
+                            SessionHandler.sendToallConnectedSessionsInRoom(room, mainObj.toString());
+
+                            
+                        	
+                        	
+                			}
+            		 catch (Exception e) {
+                         e.printStackTrace();
+                         SessionHandler.sendToSession(session, "Lipa");
+                     }
+                    	
                     }
                     else {
                         s.getBasicRemote().sendObject(message);
