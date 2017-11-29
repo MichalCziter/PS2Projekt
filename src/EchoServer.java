@@ -1,4 +1,6 @@
+import java.awt.List;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -237,13 +239,13 @@ public class EchoServer {
                             
                             String arr[][] = new String[100][100];
                             String arr1[] = new String[100];
-                            
+                            ArrayList<Map<String, String>> lista = new ArrayList<Map<String, String>>();
 
                             JSONObject cos2 = new JSONObject();
                             while (resultSet.next()) {
                             	//System.out.println(resultSet.getString(1));
                             	
-                            	Map obj = new LinkedHashMap();
+                            	Map<String, String> obj = new LinkedHashMap<String, String>();
                             	JSONObject cos = new JSONObject();
                             	
 
@@ -258,18 +260,21 @@ public class EchoServer {
                             		licznik= columnName[j];
                             		//System.out.println(licznik);
                             		//cos.put(licznik, arr[i][j]);
-                            		cos.put(licznik, arr1[j]);
+                            		//cos.put(licznik, arr1[j]);
                             		//cos2.put(licznik, j);
                             		
-                            		//obj.put(licznik, arr1[j]);
+                            		obj.put(licznik, arr1[j]);
                             		//System.out.println(cos);
                                 	System.out.println("cos w petli"+cos);
                                 	tablicaCos2.put(cos);
 
                             	}
+                            	
+                            	lista.add(obj);
+                            	
                             	//System.out.println("cCOS2"+cos2);
                             	//System.out.println("cos nie w petli"+cos);
-                            	tablicaCos.put(cos);
+                            	tablicaCos.put(obj);
                             	//Gson gson = new Gson();
                             	//String json = gson.toJson(obj, LinkedHashMap.class);
                             	
@@ -284,6 +289,39 @@ public class EchoServer {
                             	//tablicaCos.put(json2);
                                 i++;                                                              
                             }
+                        	JSONArray tablicaCosSll = new JSONArray();
+                        	
+                        	
+                        
+                     	
+                          // for(int kk = 0; kk < lista.size(); kk += 1) {
+               	
+                            	MyObj mo = new MyObj();
+                            	Map<String, String> obj = lista.get(0);
+                            	obj.forEach((key, value) -> {
+                        			
+                            		mo.Ad(key, value);
+                            		
+                            		
+                            		
+                            		
+                            	});
+                            	
+                            	Pojo p = new Pojo(mo);
+                            	
+                         //   }
+                            
+                      
+                       
+                                Gson gson = new Gson();
+	                            String json = gson.toJson(mo);
+	                            System.out.println(json);
+	                            	
+	                            
+	                           // JSONArray jsonArray = new JSONArray(sb.toString());
+                            
+	                            
+                            
                             //System.out.println("WYNIK"+tablicaCos2);
                             //System.out.println("TABLICACOS=" + tablicaCos);
                             //System.out.println(tablicaCos);
@@ -306,6 +344,8 @@ public class EchoServer {
                             
                             mainObj.put("dzialanie", "wysylamTabele");
                             mainObj.put("Tabela", tablicaCos);
+                            
+                            
                             //mainObj.put("Kolumny", cos2);
                             //mainObj.put("Tabela", json);
                             
