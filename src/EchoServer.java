@@ -1,4 +1,6 @@
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,6 +22,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.DriverManager;
 
+import com.google.gson.Gson;
 import com.microsoft.sqlserver.jdbc.*;
 import org.json.*;
 
@@ -222,6 +225,7 @@ public class EchoServer {
                         	
                         	
                         	JSONArray tablicaCos = new JSONArray();
+                        	JSONArray tablicaCos2 = new JSONArray();
                         	JSONObject mainObj = new JSONObject();
                         	//cos.put("dzialanie", "wysylamTabele");
                         	String licznik = " ";
@@ -232,38 +236,78 @@ public class EchoServer {
                             int j = 1;
                             
                             String arr[][] = new String[100][100];
+                            String arr1[] = new String[100];
                             
+
+                            JSONObject cos2 = new JSONObject();
                             while (resultSet.next()) {
-                            	JSONObject cos = new JSONObject();
-                            	//licznik= columnName[i];
-
+                            	//System.out.println(resultSet.getString(1));
                             	
-                            	for(j=1;j<columnsNumber+1;j++) {
-                            		
-                            		
-                            		arr[i][j] = resultSet.getString(j);
-                            		licznik= columnName[j];
-                            		cos.put(licznik, arr[i][j]);
-                            		
-                                	//System.out.print(resultSet.getString(j));
-                                	
+                            	Map obj = new LinkedHashMap();
+                            	JSONObject cos = new JSONObject();
+                            	
 
+
+                            	for(j=1;j<columnsNumber+1;j++) {  
+                                	//cos = new JSONObject();
+                                	 //cos2 = new JSONObject();
+
+
+                            		//arr[i][j] = resultSet.getString(j);
+                            		arr1[j] = resultSet.getString(j);
+                            		licznik= columnName[j];
+                            		//System.out.println(licznik);
+                            		//cos.put(licznik, arr[i][j]);
+                            		cos.put(licznik, arr1[j]);
+                            		//cos2.put(licznik, j);
                             		
+                            		//obj.put(licznik, arr1[j]);
+                            		//System.out.println(cos);
+                                	System.out.println("cos w petli"+cos);
+                                	tablicaCos2.put(cos);
+
                             	}
+                            	//System.out.println("cCOS2"+cos2);
+                            	//System.out.println("cos nie w petli"+cos);
                             	tablicaCos.put(cos);
-                                //String em = resultSet.getString(1);
-                                //arr[i] = em;
-                                //licznik= "tabela" + String.valueOf(i);
-                                //System.out.println(arr);
-                            	//System.out.println(em);
-                            	//cos.put(licznik, arr[i]);
-                                i++;
-                                
+                            	//Gson gson = new Gson();
+                            	//String json = gson.toJson(obj, LinkedHashMap.class);
+                            	
+                            	//cos = new JSONObject(json);
+                            	//System.out.println(cos);
+                            	//System.out.println(obj);
+                            	//String json2 = json.replace("\\\\", "");
+                            	//System.out.println("json=" + json);
+                            	//System.out.println("json2=" + json2);
+                            	
+                            	
+                            	//tablicaCos.put(json2);
+                                i++;                                                              
                             }
+                            //System.out.println("WYNIK"+tablicaCos2);
+                            //System.out.println("TABLICACOS=" + tablicaCos);
+                            //System.out.println(tablicaCos);
+                            /////////////////////////////
+                            /*JSONArray json = new JSONArray();
+                            
+                            while(resultSet.next()) {
+                              int numColumns = rsmd.getColumnCount();
+                              JSONObject obj = new JSONObject();
+                              for (int k=1; k<=numColumns; k++) {
+                                String column_name = rsmd.getColumnName(k);
+                                obj.put(column_name, resultSet.getObject(column_name));
+                              }
+                              json.put(obj);
+                            }*/
+                            
+                            
+                            /////////////////////////////
 
                             
                             mainObj.put("dzialanie", "wysylamTabele");
                             mainObj.put("Tabela", tablicaCos);
+                            //mainObj.put("Kolumny", cos2);
+                            //mainObj.put("Tabela", json);
                             
                             System.out.println(mainObj.toString());
                             // 0 - malarze , 1 - obrazy
@@ -273,6 +317,7 @@ public class EchoServer {
                             //String tab[] = arr;
                             
                             SessionHandler.sendToallConnectedSessionsInRoom(room, mainObj.toString());
+                            //SessionHandler.sendToallConnectedSessionsInRoom(room, json.toString());
 
                             
                         	

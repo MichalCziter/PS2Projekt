@@ -137,6 +137,8 @@
             		
             		writeResponse("dupa");
             		var myBooks = json.Tabela;
+
+            		
             		console.log(myBooks);
             		//wypisuje dobrze do loga, ale nie mozna wystwietlic na stronie bo pokazuje object
             		//tworzymy tabele
@@ -168,6 +170,7 @@
 
 				            for (var j = 0; j < col.length; j++) {
 				                var tabCell = tr.insertCell(-1);
+
 				                tabCell.innerHTML = myBooks[i][col[j]];
 				            }
 				        }
