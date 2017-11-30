@@ -39,7 +39,7 @@
 
             webSocket.onmessage = function(event){
             	obsluga(event);
-                writeResponse(event.data);
+                //writeResponse(event.data);
             };
 
             webSocket.onclose = function(event){
@@ -58,9 +58,9 @@
         	obj.tabela = text;
         	var jsonString= JSON.stringify(obj);
 			
-        	writeResponse(jsonString + "Dziala xDDdD");
+        	//writeResponse(jsonString + "Dziala xDDdD");
             webSocket.send(jsonString);
-        	writeResponse("POSZLO");
+        	//writeResponse("POSZLO");
         	
         	
         }
@@ -123,11 +123,12 @@
             	var nazwaTabeli = location.search.split('choose=')[1];
             	var co = prompt("Co chcesz edytowac?", "Wpisz");
             	var na = prompt("Na co chcesz zmienic?", "Wpisz");
+            	var indeks = prompt("Podaj Indeks", "Wpisz");
             	var gdzie = prompt("Podaj obecna wartosc edytowanego pola", "Wpisz");
             	//alert(squel.update().table(nazwaTabeli).set(co,na).where(co+"="+gdzie).toString());
             	
             	var zapytanieEdytuj = squel.update().table(nazwaTabeli).set(co,na).where(co+"='"+gdzie+"'").toString();
-            	alert(zapytanieEdytuj);
+            	//alert(zapytanieEdytuj);
             	
             	var objEdytuj = new Object();
             	objEdytuj.dzialanie = "Edytuj";
@@ -137,15 +138,15 @@
     			
             	//writeResponse(jsonString + "Dziala xDDdD");
                 webSocket.send(jsonEdytuj);
-            	alert("POSZLO");
+            	//alert("POSZLO");
             
             }
             
             function obsluga(event){
-            	alert(event.data);
+            	//alert(event.data);
             	            	
             	var json = JSON.parse(event.data);
-            	writeResponse(json.dzialanie);
+            	//writeResponse(json.dzialanie);
             	if (json.dzialanie == "tabele"){
             		var div = document.querySelector("#container"),
             	    frag = document.createDocumentFragment(),

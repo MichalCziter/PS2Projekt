@@ -382,7 +382,7 @@ public class EchoServer {
                         
                         Statement statement = connection.createStatement();
                         
-                    	statement.executeQuery(selectSql);
+                    	statement.executeUpdate(selectSql);
                     	
                         String wybranaTabela = jsonObj.getString("tabela");
 
@@ -422,7 +422,7 @@ public class EchoServer {
                         mainObj.put("dzialanie", "wysylamTabele");
                         mainObj.put("Tabela", tablicaCos);
                         System.out.println(mainObj);
-                        //SessionHandler.sendToallConnectedSessionsInRoom(room, mainObj.toString());
+                        SessionHandler.sendToallConnectedSessionsInRoom(room, mainObj.toString());
 
                     	
                     	
