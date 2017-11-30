@@ -8,6 +8,7 @@
           <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/squel/5.12.0/squel.min.js"></script>
           <script type="text/javascript">
         function openSocket(){
             // Ensures only one connection is open at a time
@@ -48,6 +49,7 @@
             
         }
         function poprosTabele(){
+        	
         	var myParam = location.search.split('choose=')[1];
         	var text = myParam;
         	
@@ -83,7 +85,10 @@
         	<button type="button" onclick="poprosTabele();" >KLIKAJ TUTAJ</button>
         	
             <button type="button" onclick="pobierzNazwy();" >Pobierz Tabele</button>
-            <button type="button" onclick="pokazZawartosc();" >Pokaz Zawartosc tabeli</button>
+            <button type="button" onclick="naGlowna();" >Wroc na glowna</button>
+            <button type="button" onclick="dodajWpis();" >DODAJ</button>
+            <button type="button" onclick="usunWpis();" >USUN</button>
+            <button type="button" onclick="edytujWpis();" >EDYTUJ</button>
 
 <div id="tabela">
 <!-- TU BEDA TABELE NARYSOWANE -->
@@ -114,7 +119,30 @@
                 
             }
             
+            function edytujWpis(){
+            	var nazwaTabeli = location.search.split('choose=')[1];
+            	var co = prompt("Co chcesz edytowac?", "Wpisz");
+            	var na = prompt("Na co chcesz zmienic?", "Wpisz");
+            	var gdzie = prompt("Podaj obecna wartosc edytowanego pola", "Wpisz");
+            	//alert(squel.update().table(nazwaTabeli).set(co,na).where(co+"="+gdzie).toString());
+            	
+            	var zapytanieEdytuj = squel.update().table(nazwaTabeli).set(co,na).where(co+"='"+gdzie+"'").toString();
+            	alert(zapytanieEdytuj);
+            	
+            	var objEdytuj = new Object();
+            	objEdytuj.dzialanie = "Edytuj";
+            	objEdytuj.zapytanie = zapytanieEdytuj;
+            	objEdytuj.tabela = nazwaTabeli;
+            	var jsonEdytuj= JSON.stringify(objEdytuj);
+    			
+            	//writeResponse(jsonString + "Dziala xDDdD");
+                webSocket.send(jsonEdytuj);
+            	alert("POSZLO");
+            
+            }
+            
             function obsluga(event){
+            	alert(event.data);
             	            	
             	var json = JSON.parse(event.data);
             	writeResponse(json.dzialanie);
@@ -135,7 +163,7 @@
             	}
             	if(json.dzialanie == "wysylamTabele"){
             		
-            		writeResponse("dupa");
+            		//writeResponse("dupa");
             		var myBooks = json.Tabela;
 
             		
@@ -185,21 +213,13 @@
             	
             }
             
-            function pokazZawartosc(){
-
-            	var e = document.getElementById("wybor");
-            	var strUser = e.options[e.selectedIndex].text;
-            	            	
-                if(strUser == "Malarze"){
-                    alert("DOBRZE"); 
-                }
-                else {
-                	alert("dupa");
-                }
-                
-                window.location = "http://localhost:8080/PS2Projekt/tables.jsp?choose=" + strUser;
+            function naGlowna(){
+            	var i = 1;
 
                 closeSocket();
+                window.location = "http://localhost:8080/PS2Projekt/index.jsp";
+
+
             }
            
             function closeSocket(){
