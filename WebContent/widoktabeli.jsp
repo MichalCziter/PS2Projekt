@@ -6,9 +6,13 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width">
           <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+			<link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/squel/5.12.0/squel.min.js"></script>
+  <script src=https://code.jquery.com/jquery-1.12.4.js></script>
+  <script src=https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js></script>
+	  <script src=https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js></script>
           <script type="text/javascript">
         function openSocket(){
             // Ensures only one connection is open at a time
@@ -84,7 +88,7 @@
         <div>
         	<button type="button" onclick="poprosTabele();" >KLIKAJ TUTAJ</button>
         	
-            <button type="button" onclick="pobierzNazwy();" >Pobierz Tabele</button>
+            <button type="button" onclick="naBootstrap();" >PRZEROB</button>
             <button type="button" onclick="naGlowna();" >Wroc na glowna</button>
             <button type="button" onclick="dodajWpis();" >DODAJ</button>
             <button type="button" onclick="usunWpis();" >USUN</button>
@@ -181,6 +185,7 @@
 				        }
 				        // CREATE DYNAMIC TABLE.
 				        var table = document.createElement("table");
+				        
 
 				        // CREATE HTML TABLE HEADER ROW USING THE EXTRACTED HEADERS ABOVE.
 
@@ -208,10 +213,19 @@
 				        var divContainer = document.getElementById("showData");
 				        divContainer.innerHTML = "";
 				        divContainer.appendChild(table);
+				        table.setAttribute("id", "table");
+				        
+
             		
             		
             	}
             	
+            }
+            
+            function naBootstrap(){
+		        $(document).ready(function() {
+		            $('#table').DataTable();
+		        } );
             }
             
             function naGlowna(){
