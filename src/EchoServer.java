@@ -433,6 +433,70 @@ public class EchoServer {
                         }
                     	
                     }
+                    if(proszedzialaj.equals("Usun")) {
+                    	try {
+                    	Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+                        connection = DriverManager.getConnection(url);
+                        String schema = connection.getSchema();
+                        System.out.println("Successful connection - Schema: " + schema);
+
+                        String selectSql = jsonObj.getString("zapytanie");
+                        //wypisanie komendy sql do okna przegladarki
+                        //SessionHandler.sendToSession(session, selectSql);
+                        
+                        Statement statement = connection.createStatement();
+                        
+                    	statement.executeUpdate(selectSql);
+                    	
+                        String wybranaTabela = jsonObj.getString("tabela");
+
+                        selectSql = "SELECT * FROM dbo." + wybranaTabela;
+                        ResultSet resultSet = statement.executeQuery(selectSql);
+                    	
+                    	ResultSetMetaData rsmd = resultSet.getMetaData();
+
+                    	int columnsNumber = rsmd.getColumnCount();
+                    	String columnName[]=new String[10];
+                    	for(int k=1;k<columnsNumber+1;k++) {
+                    		columnName[k] = rsmd.getColumnName(k);
+                    	}
+                    	
+                    	JSONArray tablicaCos = new JSONArray();
+                    	JSONObject mainObj = new JSONObject();
+
+                    	String licznik = " ";
+
+                    	int i = 1;
+                        int j = 1;
+                        
+                        String arr1[] = new String[100];
+
+                        while (resultSet.next()) {
+                        	Map<String, String> obj = new LinkedHashMap<String, String>();
+                        	JSONObject cos = new JSONObject();                       	
+                        	for(j=1;j<columnsNumber+1;j++) {  
+                        		arr1[j] = resultSet.getString(j);
+                        		licznik= columnName[j];                        		
+                        		obj.put(licznik, arr1[j]);
+                        	}
+                        	tablicaCos.put(obj);
+                            i++;                                                              
+                        }
+                    	
+                        mainObj.put("dzialanie", "wysylamTabele");
+                        mainObj.put("Tabela", tablicaCos);
+                        System.out.println(mainObj);
+                        SessionHandler.sendToallConnectedSessionsInRoom(room, mainObj.toString());
+
+                    	
+                    	
+                    	}
+                    	catch (Exception e) {
+                            e.printStackTrace();
+                            SessionHandler.sendToSession(session, "Blad edycji");
+                        }
+                    	
+                    }
                     else {
                         s.getBasicRemote().sendObject(message);
                     }

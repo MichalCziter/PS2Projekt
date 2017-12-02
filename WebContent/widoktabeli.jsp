@@ -146,6 +146,22 @@
             
             }
             
+            function usunWpis(){
+            	var nazwaTabeli = location.search.split('choose=')[1];
+            	var co = prompt("Podaj nazwe kolumny z ID w nazwie", "Wpisz");
+            	var wartoscID = prompt("Podaj ID", "Wpisz");
+            	var zapytanieUsun = squel.remove().from(nazwaTabeli).where(co+"="+wartoscID).toString();
+            	
+            	var objUsun = new Object();
+            	objUsun.dzialanie = "Usun";
+            	objUsun.zapytanie = zapytanieUsun;
+            	objUsun.tabela = nazwaTabeli;
+            	var jsonUsun = JSON.stringify(objUsun);
+            	
+            	webSocket.send(jsonUsun);
+            	
+            }
+            
             function obsluga(event){
             	//alert(event.data);
             	            	
