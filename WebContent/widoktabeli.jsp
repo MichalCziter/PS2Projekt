@@ -14,6 +14,7 @@
   <script src=https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js></script>
 	  <script src=https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js></script>
           <script type="text/javascript">
+          
         function openSocket(){
             // Ensures only one connection is open at a time
             
@@ -75,6 +76,7 @@
 			
         	//poprosTabele();
         }
+        var pomocniczeDodawanie;
         </script>
     </head>
     <body>
@@ -162,6 +164,51 @@
             	
             }
             
+            function dodajWpis(event){
+            	var nazwaTabeli = location.search.split('choose=')[1];
+            	///////////////////////////////////////////
+            	var myBooks = pomocniczeDodawanie;
+            	var col = [];
+            	var pomocnicza = [];
+            	var testJson = {};
+            
+		        for (var i = 0; i < myBooks.length; i++) {
+		            for (var key in myBooks[i]) {
+		                if (col.indexOf(key) === -1) {
+		                    col.push(key);
+		                    //var co[i] = prompt(key, "Wpisz");
+		                    pomocnicza = prompt("Podaj "+key.toString(),"Wpisz");
+		                    testJson[key.toString()] = pomocnicza;
+		                    
+		                }
+		            }
+		        }
+		        var jsonDodaj = JSON.parse(JSON.stringify(testJson));
+		        
+		        /*for (var i = 0; i < myBooks.length; i++){
+		        	pomocnicza = prompt(jsonDodaj,"Wpisz");
+		        }*/
+		        
+		        //console.log(testJson);
+		        //console.log(col);
+		        console.log(jsonDodaj);
+            	
+            	///////////////////////////////////////////
+            	
+            	/*var co = prompt("Podaj nazwe kolumny z ID w nazwie", "Wpisz");
+            	var wartoscID = prompt("Podaj ID", "Wpisz");
+            	var zapytanieDodaj = squel.remove().from(nazwaTabeli).where(co+"="+wartoscID).toString();
+            	
+            	var objDodaj = new Object();
+            	objDodaj.dzialanie = "Dodaj";
+            	objDodaj.zapytanie = zapytanieDodaj;
+            	objDodaj.tabela = nazwaTabeli;
+            	var jsonDodaj = JSON.stringify(objUsun);
+            	
+            	webSocket.send(jsonDodaj);*/
+            	
+            }
+            
             function obsluga(event){
             	//alert(event.data);
             	            	
@@ -185,6 +232,7 @@
             	if(json.dzialanie == "wysylamTabele"){
             		
             		//writeResponse("dupa");
+            		pomocniczeDodawanie = json.Tabela;
             		var myBooks = json.Tabela;
 
             		
