@@ -19,6 +19,7 @@ import javax.websocket.server.ServerEndpoint;
 
 import java.sql.Connection;
 import java.sql.Statement;
+import java.sql.Types;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -496,6 +497,194 @@ public class EchoServer {
                             SessionHandler.sendToSession(session, "Blad edycji");
                         }
                     	
+                    }
+                    if(proszedzialaj.equals("Dodaj")) {
+                    	try {
+                    	Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+                        connection = DriverManager.getConnection(url);
+                        String schema = connection.getSchema();
+                        System.out.println("Successful connection - Schema: " + schema);
+                        String wybranaTabela = jsonObj.getString("tabela");
+                        
+                        String selectSql = "SELECT * FROM dbo." + wybranaTabela;
+                        System.out.println("TO JEST SELECT SQL");
+                        System.out.println(selectSql);
+                        System.out.println("TO JEST SELECT SQL");
+                        
+                        Statement statement = connection.createStatement();
+                        
+                        ResultSet rs = statement.executeQuery(selectSql);
+                    	
+                        String zapytanie = "INSERT INTO dbo." + wybranaTabela + " VALUES (";                       
+                        
+                        rs.next();
+                            ResultSetMetaData rsmd = rs.getMetaData();
+                            for (int i = 2; i <= rsmd.getColumnCount(); i++) {
+
+
+                                int type = rsmd.getColumnType(i);
+                                if(i==(rsmd.getColumnCount())) {
+                                    if (type == Types.VARCHAR || type == Types.CHAR) {
+                                        //System.out.print("TEXT "+rs.getString(i));
+                                        zapytanie = new StringBuilder(zapytanie).append("'").toString();
+                                        zapytanie = new StringBuilder(zapytanie).append(jsonObj.get(jsonObj.names().getString(i-1))).toString();
+                                        zapytanie = new StringBuilder(zapytanie).append("'").toString();
+                                    } else 
+                                    {
+                                        //System.out.print("LICZBA "+rs.getLong(i));
+                                        zapytanie = new StringBuilder(zapytanie).append(jsonObj.get(jsonObj.names().getString(i-1))).toString();
+                                    }
+                                	
+                                }
+                                else
+                                if (type == Types.VARCHAR || type == Types.CHAR) {
+                                    //System.out.print("TEXT "+rs.getString(i));
+                                    zapytanie = new StringBuilder(zapytanie).append("'").toString();
+                                    zapytanie = new StringBuilder(zapytanie).append(jsonObj.get(jsonObj.names().getString(i-1))).toString();
+                                    zapytanie = new StringBuilder(zapytanie).append("'").toString();
+                                    zapytanie = new StringBuilder(zapytanie).append(", ").toString();
+                                } else {
+                                    //System.out.print("LICZBA "+rs.getLong(i));
+                                    zapytanie = new StringBuilder(zapytanie).append(jsonObj.get(jsonObj.names().getString(i-1))).toString();
+                                    zapytanie = new StringBuilder(zapytanie).append(", ").toString();
+                                }
+                            }
+                            System.out.println("ZAPYTANIE");
+                            zapytanie = new StringBuilder(zapytanie).append(")").toString();
+                            
+                            System.out.println(zapytanie);
+                            System.out.println("ZAPYTANIE");
+                        
+                        
+////////////////////////////////////////////////////////////////////////////                       
+                        
+                        statement.executeUpdate(zapytanie);
+                        ResultSet resultSet = statement.executeQuery(selectSql);
+                        
+                        
+                    	
+                    	rsmd = resultSet.getMetaData();
+
+                    	int columnsNumber = rsmd.getColumnCount();
+                    	String columnName[]=new String[10];
+                    	for(int k=1;k<columnsNumber+1;k++) {
+                    		columnName[k] = rsmd.getColumnName(k);
+                    	}
+                    	
+                    	JSONArray tablicaCos = new JSONArray();
+                    	JSONObject mainObj = new JSONObject();
+
+                    	String licznik = " ";
+
+                    	int i = 1;
+                        int j = 1;
+                        
+                        String arr1[] = new String[100];
+
+                        while (resultSet.next()) {
+                        	Map<String, String> obj = new LinkedHashMap<String, String>();
+                        	JSONObject cos = new JSONObject();                       	
+                        	for(j=1;j<columnsNumber+1;j++) {  
+                        		arr1[j] = resultSet.getString(j);
+                        		licznik= columnName[j];                        		
+                        		obj.put(licznik, arr1[j]);
+                        	}
+                        	tablicaCos.put(obj);
+                            i++;                                                              
+                        }
+                    	
+                        mainObj.put("dzialanie", "wysylamTabele");
+                        mainObj.put("Tabela", tablicaCos);
+                        System.out.println(mainObj);
+                        SessionHandler.sendToallConnectedSessionsInRoom(room, mainObj.toString());
+
+                    	
+                    	
+                    	}
+                    	catch (Exception e) {
+                            e.printStackTrace();
+                            SessionHandler.sendToSession(session, "Blad edycji");
+                        }
+                    	
+                    }
+                    if(proszedzialaj.equals("Zapytanie")) {
+                    	try {
+                    	Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+                        connection = DriverManager.getConnection(url);
+                        String schema = connection.getSchema();
+                        System.out.println("Successful connection - Schema: " + schema);
+
+                        String selectSql = jsonObj.getString("komenda");
+                        
+                        Statement statement = connection.createStatement();
+                        
+                    	statement.executeUpdate(selectSql);
+                    	                   	                    	
+                    	JSONObject mainObj = new JSONObject();
+
+                        mainObj.put("dzialanie", "zapytanieWykonane");
+                        mainObj.put("ostatnieZapytanie", selectSql);
+                        System.out.println(mainObj);
+                        SessionHandler.sendToallConnectedSessionsInRoom(room, mainObj.toString());
+                   	                    	
+                    	}
+                    	catch (Exception e) {
+                    		try {
+                            	Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+                                connection = DriverManager.getConnection(url);
+                                String schema = connection.getSchema();
+                                System.out.println("Successful connection - Schema: " + schema);
+
+                                String selectSql = jsonObj.getString("komenda");
+                                //wypisanie komendy sql do okna przegladarki
+                                //SessionHandler.sendToSession(session, selectSql);
+                                
+                                Statement statement = connection.createStatement();
+                                
+                                ResultSet resultSet = statement.executeQuery(selectSql);
+                            	
+                            	ResultSetMetaData rsmd = resultSet.getMetaData();
+
+                            	int columnsNumber = rsmd.getColumnCount();
+                            	String columnName[]=new String[10];
+                            	for(int k=1;k<columnsNumber+1;k++) {
+                            		columnName[k] = rsmd.getColumnName(k);
+                            	}
+                            	
+                            	JSONArray tablicaCos = new JSONArray();
+                            	JSONObject mainObj = new JSONObject();
+
+                            	String licznik = " ";
+
+                            	int i = 1;
+                                int j = 1;
+                                
+                                String arr1[] = new String[100];
+
+                                while (resultSet.next()) {
+                                	Map<String, String> obj = new LinkedHashMap<String, String>();
+                                	JSONObject cos = new JSONObject();                       	
+                                	for(j=1;j<columnsNumber+1;j++) {  
+                                		arr1[j] = resultSet.getString(j);
+                                		licznik= columnName[j];                        		
+                                		obj.put(licznik, arr1[j]);
+                                	}
+                                	tablicaCos.put(obj);
+                                    i++;                                                              
+                                }
+                            	
+                                mainObj.put("dzialanie", "zapytanieWykonaneTabela");
+                                mainObj.put("Tabela", tablicaCos);
+                                mainObj.put("ostatnieZapytanie", selectSql);
+                                System.out.println(mainObj);
+                                SessionHandler.sendToallConnectedSessionsInRoom(room, mainObj.toString());
+                            	   	
+                            	}
+                            	catch (Exception f) {
+                                    f.printStackTrace();
+                                    SessionHandler.sendToSession(session, "Blad edycji");
+                                }
+                        }
                     }
                     else {
                         s.getBasicRemote().sendObject(message);

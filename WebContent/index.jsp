@@ -43,12 +43,15 @@
             
             
         }
+
+        
         </script>
     </head>
     <body>
        
         <div>
-            SQL Command :<input type="text" id="messageinput"/>
+            SQL Command :<input type="text" size="70" id="sqlinput"/>
+            <button type="button" onclick="wyslijZapytanie();" >Wyslij Zapytanie</button>
         </div>
         <div id="container">
         	
@@ -67,9 +70,16 @@
        
         <!-- Script to utilise the WebSocket -->
         <script type="text/javascript">
+        
+        var domyslny = location.search.split('choose=')[1];
+        if(domyslny != null){
+        	document.getElementById('sqlinput').value = domyslny;
+        }
+        
                        
             var webSocket;
             var messages = document.getElementById("messages");
+            
            
            
             
@@ -103,6 +113,18 @@
             		div.appendChild(frag);
             		
             	}
+            	
+            }
+            function wyslijZapytanie(){
+            	var e = document.getElementById("sqlinput").value;
+            	var objZapytanie = new Object();
+            	objZapytanie.dzialanie = "Zapytanie";
+            	objZapytanie.komenda = e;
+            	var jsonZapytanie = JSON.stringify(objZapytanie);
+            	//writeResponse(jsonZapytanie);
+            	window.location = "http://localhost:8080/PS2Projekt/widoktabeli.jsp";
+            	webSocket.send(jsonZapytanie);
+            	
             	
             }
             

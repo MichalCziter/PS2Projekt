@@ -108,6 +108,9 @@
        
         <!-- Script to utilise the WebSocket -->
         <script type="text/javascript">
+        
+        var globalUpdatePowrot;
+        var globalInsertPowrot;
                        
             var webSocket;
             var messages = document.getElementById("messages");
@@ -183,30 +186,14 @@
 		                }
 		            }
 		        }
+		        testJson.dzialanie = "Dodaj";
+		        testJson.tabela = nazwaTabeli;
 		        var jsonDodaj = JSON.parse(JSON.stringify(testJson));
-		        
-		        /*for (var i = 0; i < myBooks.length; i++){
-		        	pomocnicza = prompt(jsonDodaj,"Wpisz");
-		        }*/
-		        
-		        //console.log(testJson);
-		        //console.log(col);
+		        var jsonDodaj2 = JSON.stringify(jsonDodaj);
 		        console.log(jsonDodaj);
-            	
-            	///////////////////////////////////////////
-            	
-            	/*var co = prompt("Podaj nazwe kolumny z ID w nazwie", "Wpisz");
-            	var wartoscID = prompt("Podaj ID", "Wpisz");
-            	var zapytanieDodaj = squel.remove().from(nazwaTabeli).where(co+"="+wartoscID).toString();
-            	
-            	var objDodaj = new Object();
-            	objDodaj.dzialanie = "Dodaj";
-            	objDodaj.zapytanie = zapytanieDodaj;
-            	objDodaj.tabela = nazwaTabeli;
-            	var jsonDodaj = JSON.stringify(objUsun);
-            	
-            	webSocket.send(jsonDodaj);*/
-            	
+		        
+		        webSocket.send(jsonDodaj2);
+		                    	
             }
             
             function obsluga(event){
@@ -283,6 +270,63 @@
             		
             		
             	}
+            	if(json.dzialanie=="zapytanieWykonane"){
+            		alert("UPDATE SUCCEDED");
+                    globalUpdatePowrot = json.ostatnieZapytanie;
+                    
+            		
+            	}
+            	if(json.dzialanie == "zapytanieWykonaneTabela"){
+            		globalInsertPowrot = json.ostatnieZapytanie;
+            		
+            		//writeResponse("dupa");
+            		pomocniczeDodawanie = json.Tabela;
+            		var myBooks = json.Tabela;
+
+            		
+            		console.log(myBooks);
+            		//wypisuje dobrze do loga, ale nie mozna wystwietlic na stronie bo pokazuje object
+            		//tworzymy tabele
+            		    var col = [];
+				        for (var i = 0; i < myBooks.length; i++) {
+				            for (var key in myBooks[i]) {
+				                if (col.indexOf(key) === -1) {
+				                    col.push(key);
+				                }
+				            }
+				        }
+				        // CREATE DYNAMIC TABLE.
+				        var table = document.createElement("table");
+				        
+
+				        // CREATE HTML TABLE HEADER ROW USING THE EXTRACTED HEADERS ABOVE.
+
+				        var tr = table.insertRow(-1);                   // TABLE ROW.
+
+				        for (var i = 0; i < col.length; i++) {
+				            var th = document.createElement("th");      // TABLE HEADER.
+				            th.innerHTML = col[i];
+				            tr.appendChild(th);
+				        }
+
+				        // ADD JSON DATA TO THE TABLE AS ROWS.
+				        for (var i = 0; i < myBooks.length; i++) {
+
+				            tr = table.insertRow(-1);
+
+				            for (var j = 0; j < col.length; j++) {
+				                var tabCell = tr.insertCell(-1);
+
+				                tabCell.innerHTML = myBooks[i][col[j]];
+				            }
+				        }
+
+				        // FINALLY ADD THE NEWLY CREATED TABLE WITH JSON DATA TO A CONTAINER.
+				        var divContainer = document.getElementById("showData");
+				        divContainer.innerHTML = "";
+				        divContainer.appendChild(table);
+				        table.setAttribute("id", "table");	
+            	}
             	
             }
             
@@ -294,9 +338,18 @@
             
             function naGlowna(){
             	var i = 1;
+            	if(globalUpdatePowrot != null){
+            		var strUser = globalUpdatePowrot;
+                    
+            	}
+            	else if(globalInsertPowrot != null){
+            		var strUser = globalInsertPowrot;
+            	}
 
                 closeSocket();
-                window.location = "http://localhost:8080/PS2Projekt/index.jsp";
+                
+                
+                window.location = "http://localhost:8080/PS2Projekt/index.jsp?choose="+strUser;
 
 
             }
