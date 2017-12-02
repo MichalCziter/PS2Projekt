@@ -12,6 +12,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/squel/5.12.0/squel.min.js"></script>
   <script src=https://code.jquery.com/jquery-1.12.4.js></script>
   <script src=https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.min.js"></script>
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.min.css">
 	  <script src=https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js></script>
           <script type="text/javascript">
           
@@ -104,7 +106,10 @@
         <!-- Server responses get written here -->
         <div id="messages"></div>
         
-        <div id="showData"></div>
+        <div id="showData">
+        <table id="tabBOOT">
+        </table>
+        </div>
        
         <!-- Script to utilise the WebSocket -->
         <script type="text/javascript">
@@ -222,11 +227,21 @@
             		pomocniczeDodawanie = json.Tabela;
             		var myBooks = json.Tabela;
 
+            		$('#tabBOOT').bootstrapTable({
+            		    data: myBooks
+            		});
             		
             		console.log(myBooks);
+            		
+            		//////////////////
+            		//TEST BOOSTRAP
+            		
+            		
+            		
+            		/////////////////
             		//wypisuje dobrze do loga, ale nie mozna wystwietlic na stronie bo pokazuje object
             		//tworzymy tabele
-            		    var col = [];
+            		/*    var col = [];
 				        for (var i = 0; i < myBooks.length; i++) {
 				            for (var key in myBooks[i]) {
 				                if (col.indexOf(key) === -1) {
@@ -264,7 +279,8 @@
 				        var divContainer = document.getElementById("showData");
 				        divContainer.innerHTML = "";
 				        divContainer.appendChild(table);
-				        table.setAttribute("id", "table");
+				        table.setAttribute("id", "table");*/
+				        
 				        
 
             		
@@ -326,6 +342,7 @@
 				        divContainer.innerHTML = "";
 				        divContainer.appendChild(table);
 				        table.setAttribute("id", "table");	
+				        
             	}
             	
             }
