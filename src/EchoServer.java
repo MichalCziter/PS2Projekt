@@ -109,7 +109,7 @@ public class EchoServer {
             for (Session s : session.getOpenSessions()){
                 if (s.isOpen() && s.getUserProperties().get("roomnumber").equals(room)){
                     //s.getBasicRemote().sendObject(message);
-                    SessionHandler.sendToallConnectedSessionsInRoom(room, message);
+                    //SessionHandler.sendToallConnectedSessionsInRoom(room, message);
 
                     
                     if(proszedzialaj.equals("Pobierz")) {
@@ -171,8 +171,10 @@ public class EchoServer {
                             
                             //String tab[] = arr;
                             
-                            SessionHandler.sendToallConnectedSessionsInRoom(room, cos.toString());
-
+                            //SessionHandler.sendToallConnectedSessionsInRoom(room, cos.toString());
+                            if(s == session) {
+                            	SessionHandler.sendToSession(s,cos.toString());
+                            }
                             
                         	
                         	
@@ -345,6 +347,7 @@ public class EchoServer {
                             
                             mainObj.put("dzialanie", "wysylamTabele");
                             mainObj.put("Tabela", tablicaCos);
+                            mainObj.put("NazwaTabeli", wybranaTabela);
                             
                             
                             //mainObj.put("Kolumny", cos2);
@@ -357,7 +360,10 @@ public class EchoServer {
                             
                             //String tab[] = arr;
                             
-                            SessionHandler.sendToallConnectedSessionsInRoom(room, mainObj.toString());
+                            //SessionHandler.sendToallConnectedSessionsInRoom(room, mainObj.toString());
+                            if(s == session) {
+                            	SessionHandler.sendToSession(s, mainObj.toString());
+                            }
                             //SessionHandler.sendToallConnectedSessionsInRoom(room, json.toString());
 
                             
@@ -486,6 +492,7 @@ public class EchoServer {
                     	
                         mainObj.put("dzialanie", "wysylamTabele");
                         mainObj.put("Tabela", tablicaCos);
+                        //mainObj.put("NazwaTabeli", wybranaTabela);
                         System.out.println(mainObj);
                         SessionHandler.sendToallConnectedSessionsInRoom(room, mainObj.toString());
 
@@ -500,6 +507,7 @@ public class EchoServer {
                     }
                     if(proszedzialaj.equals("Dodaj")) {
                     	try {
+                    		if(s == session) {
                     	Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
                         connection = DriverManager.getConnection(url);
                         String schema = connection.getSchema();
@@ -564,6 +572,7 @@ public class EchoServer {
                         
                     	
                     	rsmd = resultSet.getMetaData();
+                    	
 
                     	int columnsNumber = rsmd.getColumnCount();
                     	String columnName[]=new String[10];
@@ -592,11 +601,14 @@ public class EchoServer {
                         	tablicaCos.put(obj);
                             i++;                                                              
                         }
+                    		
                     	
                         mainObj.put("dzialanie", "wysylamTabele");
                         mainObj.put("Tabela", tablicaCos);
+                        mainObj.put("NazwaTabeli", wybranaTabela);
                         System.out.println(mainObj);
                         SessionHandler.sendToallConnectedSessionsInRoom(room, mainObj.toString());
+                    		}
 
                     	
                     	

@@ -13,6 +13,7 @@
   <script src=https://code.jquery.com/jquery-1.12.4.js></script>
   <script src=https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.min.js"></script>
+
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.min.css">
 	  <script src=https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js></script>
           <script type="text/javascript">
@@ -54,6 +55,7 @@
             };
             
             
+            
         }
         function poprosTabele(){
         	
@@ -79,20 +81,22 @@
         	//poprosTabele();
         }
         var pomocniczeDodawanie;
+        var licznik=1;
+        
+        window.onunload = function(){
+        	closeSocket();
+        }
+        
         </script>
     </head>
     <body>
        
-        <div>
-            SQL Command :<input type="text" id="messageinput"/>
-        </div>
+
         <div id="container">
         	
         </div>
         <div>
         	<button type="button" onclick="poprosTabele();" >KLIKAJ TUTAJ</button>
-        	
-            <button type="button" onclick="naBootstrap();" >PRZEROB</button>
             <button type="button" onclick="naGlowna();" >Wroc na glowna</button>
             <button type="button" onclick="dodajWpis();" >DODAJ</button>
             <button type="button" onclick="usunWpis();" >USUN</button>
@@ -107,7 +111,8 @@
         <div id="messages"></div>
         
         <div id="showData">
-        <table id="tabBOOT">
+        <table id="tabBOOT" class="display" width="100%">
+
         </table>
         </div>
        
@@ -123,7 +128,7 @@
            
             
            
-            /**
+            /*
              * Sends the value of the text input to the server
              */
             function send(){
@@ -156,17 +161,39 @@
             
             }
             
-            function usunWpis(){
+            function usunWpis(event){
             	var nazwaTabeli = location.search.split('choose=')[1];
-            	var co = prompt("Podaj nazwe kolumny z ID w nazwie", "Wpisz");
-            	var wartoscID = prompt("Podaj ID", "Wpisz");
-            	var zapytanieUsun = squel.remove().from(nazwaTabeli).where(co+"="+wartoscID).toString();
+            	var myTable = pomocniczeDodawanie;
+            	var col = [];
+            	var pomocnicza = [];
+            	var testJson = {};
+            	var flaga = 1;
+            	
+		        for (var i = 0; i < myTable.length; i++) {
+		            for (var key in myTable[i]) {
+		                if (col.indexOf(key) === -1) {
+		                    if(i==0){
+		                    	if(flaga == 1){
+		                    		pomocnicza = key.toString();
+		                    		console.log(pomocnicza);
+		                    		flaga = 2;
+		                    	}	
+		                    }	                    
+		                }
+		            }
+		        }
+
+            	var wartoscID = prompt("Podaj " + pomocnicza + " do usuniecia", "Wpisz");            	
+            	var zapytanieUsun = squel.remove().from(nazwaTabeli).where(pomocnicza+"="+wartoscID).toString();
+
             	
             	var objUsun = new Object();
             	objUsun.dzialanie = "Usun";
             	objUsun.zapytanie = zapytanieUsun;
             	objUsun.tabela = nazwaTabeli;
             	var jsonUsun = JSON.stringify(objUsun);
+            	
+
             	
             	webSocket.send(jsonUsun);
             	
@@ -175,16 +202,15 @@
             function dodajWpis(event){
             	var nazwaTabeli = location.search.split('choose=')[1];
             	///////////////////////////////////////////
-            	var myBooks = pomocniczeDodawanie;
+            	var myTable = pomocniczeDodawanie;
             	var col = [];
             	var pomocnicza = [];
             	var testJson = {};
             
-		        for (var i = 0; i < myBooks.length; i++) {
-		            for (var key in myBooks[i]) {
+		        for (var i = 0; i < myTable.length; i++) {
+		            for (var key in myTable[i]) {
 		                if (col.indexOf(key) === -1) {
 		                    col.push(key);
-		                    //var co[i] = prompt(key, "Wpisz");
 		                    pomocnicza = prompt("Podaj "+key.toString(),"Wpisz");
 		                    testJson[key.toString()] = pomocnicza;
 		                    
@@ -196,10 +222,12 @@
 		        var jsonDodaj = JSON.parse(JSON.stringify(testJson));
 		        var jsonDodaj2 = JSON.stringify(jsonDodaj);
 		        console.log(jsonDodaj);
+
 		        
 		        webSocket.send(jsonDodaj2);
 		                    	
             }
+
             
             function obsluga(event){
             	//alert(event.data);
@@ -223,68 +251,50 @@
             	}
             	if(json.dzialanie == "wysylamTabele"){
             		
-            		//writeResponse("dupa");
-            		pomocniczeDodawanie = json.Tabela;
-            		var myBooks = json.Tabela;
-
-            		$('#tabBOOT').bootstrapTable({
-            		    data: myBooks
-            		});
             		
-            		console.log(myBooks);
+            		var nazwaTabeli = location.search.split('choose=')[1];
             		
-            		//////////////////
-            		//TEST BOOSTRAP
+            		if(nazwaTabeli == json.NazwaTabeli){
+                		//writeResponse("dupa");
+                		console.log("serwer odpowiedzial");
+                		pomocniczeDodawanie = json.Tabela;
+                		var myTable = json.Tabela;
+                		
+                        var parenttbl = document.getElementById('tabBOOT');
+                		var a = myTable;
+                		if(licznik==1){
+                		
+                		var mojThead = parenttbl.createTHead();
+                		var mojTR = mojThead.insertRow(0);
+                		
+                		               	
+                		for (var i in a[0]) {
+    	                	    
+    	    	                	var mojTH = document.createElement('th');
+    	    	                	mojTH.setAttribute("data-field", i);
+    	    	                	mojTH.setAttribute("data-sortable", 'true');
+    	    	                	mojTH.innerHTML = i;
+    	    	                	mojTR.appendChild(mojTH);	                	    
+       		
+                    	}
+                		
+                		
+                		
+
+                    		licznik = 2;
+                		}
+                		$('#tabBOOT').bootstrapTable({
+                		    data: myTable
+                		});
+
+                		
+                	     $('#tabBOOT').bootstrapTable("load", myTable);
+            		}
             		
-            		
-            		
-            		/////////////////
-            		//wypisuje dobrze do loga, ale nie mozna wystwietlic na stronie bo pokazuje object
-            		//tworzymy tabele
-            		/*    var col = [];
-				        for (var i = 0; i < myBooks.length; i++) {
-				            for (var key in myBooks[i]) {
-				                if (col.indexOf(key) === -1) {
-				                    col.push(key);
-				                }
-				            }
-				        }
-				        // CREATE DYNAMIC TABLE.
-				        var table = document.createElement("table");
-				        
 
-				        // CREATE HTML TABLE HEADER ROW USING THE EXTRACTED HEADERS ABOVE.
 
-				        var tr = table.insertRow(-1);                   // TABLE ROW.
+                
 
-				        for (var i = 0; i < col.length; i++) {
-				            var th = document.createElement("th");      // TABLE HEADER.
-				            th.innerHTML = col[i];
-				            tr.appendChild(th);
-				        }
-
-				        // ADD JSON DATA TO THE TABLE AS ROWS.
-				        for (var i = 0; i < myBooks.length; i++) {
-
-				            tr = table.insertRow(-1);
-
-				            for (var j = 0; j < col.length; j++) {
-				                var tabCell = tr.insertCell(-1);
-
-				                tabCell.innerHTML = myBooks[i][col[j]];
-				            }
-				        }
-
-				        // FINALLY ADD THE NEWLY CREATED TABLE WITH JSON DATA TO A CONTAINER.
-				        var divContainer = document.getElementById("showData");
-				        divContainer.innerHTML = "";
-				        divContainer.appendChild(table);
-				        table.setAttribute("id", "table");*/
-				        
-				        
-
-            		
-            		
             	}
             	if(json.dzialanie=="zapytanieWykonane"){
             		alert("UPDATE SUCCEDED");
@@ -297,51 +307,31 @@
             		
             		//writeResponse("dupa");
             		pomocniczeDodawanie = json.Tabela;
-            		var myBooks = json.Tabela;
+            		var myTable = json.Tabela;
+            		
+                    var parenttbl = document.getElementById('tabBOOT');
+            		var a = myTable;
+            		
+            		var mojThead = parenttbl.createTHead();
+            		var mojTR = mojThead.insertRow(0);
+            		               	
+            		for (var i in a[0]) {
+	                	    
+	    	                	var mojTH = document.createElement('th');
+	    	                	mojTH.setAttribute("data-field", i);
+	    	                	mojTH.setAttribute("data-sortable", 'true');
+	    	                	mojTH.innerHTML = i;
+	    	                	mojTR.appendChild(mojTH);	                	    
+   		
+                	}
+            		
+            		
+            		$('#tabBOOT').bootstrapTable({
+            		    data: myTable
+            		});
 
             		
-            		console.log(myBooks);
-            		//wypisuje dobrze do loga, ale nie mozna wystwietlic na stronie bo pokazuje object
-            		//tworzymy tabele
-            		    var col = [];
-				        for (var i = 0; i < myBooks.length; i++) {
-				            for (var key in myBooks[i]) {
-				                if (col.indexOf(key) === -1) {
-				                    col.push(key);
-				                }
-				            }
-				        }
-				        // CREATE DYNAMIC TABLE.
-				        var table = document.createElement("table");
-				        
-
-				        // CREATE HTML TABLE HEADER ROW USING THE EXTRACTED HEADERS ABOVE.
-
-				        var tr = table.insertRow(-1);                   // TABLE ROW.
-
-				        for (var i = 0; i < col.length; i++) {
-				            var th = document.createElement("th");      // TABLE HEADER.
-				            th.innerHTML = col[i];
-				            tr.appendChild(th);
-				        }
-
-				        // ADD JSON DATA TO THE TABLE AS ROWS.
-				        for (var i = 0; i < myBooks.length; i++) {
-
-				            tr = table.insertRow(-1);
-
-				            for (var j = 0; j < col.length; j++) {
-				                var tabCell = tr.insertCell(-1);
-
-				                tabCell.innerHTML = myBooks[i][col[j]];
-				            }
-				        }
-
-				        // FINALLY ADD THE NEWLY CREATED TABLE WITH JSON DATA TO A CONTAINER.
-				        var divContainer = document.getElementById("showData");
-				        divContainer.innerHTML = "";
-				        divContainer.appendChild(table);
-				        table.setAttribute("id", "table");	
+            		
 				        
             	}
             	
@@ -367,6 +357,7 @@
                 
                 
                 window.location = "http://localhost:8080/PS2Projekt/index.jsp?choose="+strUser;
+                //window.location = "http://kapustatest.azurewebsites.net/PS2Projekt/index.jsp?choose="+strUser;
 
 
             }

@@ -44,7 +44,9 @@
             
         }
 
-        
+        window.onunload = function(){
+        	closeSocket();
+        }
         </script>
     </head>
     <body>
@@ -123,7 +125,10 @@
             	var jsonZapytanie = JSON.stringify(objZapytanie);
             	//writeResponse(jsonZapytanie);
             	window.location = "http://localhost:8080/PS2Projekt/widoktabeli.jsp";
+            	//windows.location = "http://kapustatest.azurewebsites.net/PS2Projekt/widoktabeli.jsp";
             	webSocket.send(jsonZapytanie);
+            	
+            	closeSocket();
             	
             	
             }
@@ -141,6 +146,7 @@
                 }
                 
                 window.location = "http://localhost:8080/PS2Projekt/widoktabeli.jsp?choose=" + strUser;
+                //window.location = "http://kapustatest.azurewebsites.net/PS2Projekt/widoktabeli.jsp?choose=" + strUser;
 
                 closeSocket();
             }
