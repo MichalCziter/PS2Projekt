@@ -712,7 +712,7 @@ public class EchoServer {
                                 }
                                 
                             	
-                                mainObj.put("dzialanie", "sukces");
+                                mainObj.put("dzialanie", "sukcesTabela");
                                 mainObj.put("Tabela", tablicaCos);
                                 mainObj.put("ostatnieZapytanie", selectSql);
                                 mainObj.put("NazwaTabeli", nazwaTabeli);
@@ -735,11 +735,12 @@ public class EchoServer {
                             		mainObj.put("bladTekst", f.getMessage());
                             		mainObj.put("kodBledu", ((SQLException)f).getErrorCode());
                             		
-
-                                        SessionHandler.sendToallConnectedSessions(mainObj.toString());
+                            			if(s == session ) {
+                                        SessionHandler.sendToSession(s, mainObj.toString());
                                         TimeUnit.SECONDS.sleep(1);
                                         SessionHandler.sendToallConnectedSessions(mainObj.toString());
 
+                            			}
                                     
                                 }
                         }

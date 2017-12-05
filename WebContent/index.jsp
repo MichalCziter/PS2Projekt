@@ -103,6 +103,7 @@
        
         <!-- Script to utilise the WebSocket -->
         <script type="text/javascript">
+        var licznikZapytan = 1;
         
         var domyslny = location.search.split('choose=')[1];
         if(domyslny != null){
@@ -131,6 +132,7 @@
             	            	
             	var json = JSON.parse(event.data);
             	writeResponse(json.dzialanie);
+            	console.log(licznikZapytan);
             	if (json.dzialanie == "tabele"){
             		var div = document.querySelector("#container"),
             	    frag = document.createDocumentFragment(),
@@ -147,12 +149,26 @@
             		
             	}
             	if(json.dzialanie == "blad"){
-            		window.location = "http://localhost:8080/PS2Projekt/widoktabeli.jsp?choose=" + json.kodBledu;
+            		if(licznikZapytan == 2){
+                		window.location = "http://localhost:8080/PS2Projekt/widoktabeli.jsp?choose=" + json.kodBledu;
+
+            		}
+            		
+            	}
+            	if(json.dzialanie == "sukcesTabela"){
+            		if(licznikZapytan == 2){
+                		window.location = "http://localhost:8080/PS2Projekt/widoktabeli.jsp?choose=" + json.NazwaTabeli;
+
+            		}
+            		else return;
             		
             	}
             	if(json.dzialanie == "sukces"){
-            		
-            		window.location = "http://localhost:8080/PS2Projekt/widoktabeli.jsp?choose=" + json.NazwaTabeli;
+            		if(licznikZapytan == 2){
+                		window.location = "http://localhost:8080/PS2Projekt/widoktabeli.jsp?choose=I";
+
+            		}
+            		else return;
             	}
             	
             }
@@ -162,6 +178,7 @@
             	objZapytanie.dzialanie = "Zapytanie";
             	objZapytanie.komenda = e;
             	var jsonZapytanie = JSON.stringify(objZapytanie);
+            	licznikZapytan = 2;
             	//writeResponse(jsonZapytanie);
             	webSocket.send(jsonZapytanie);
             	//window.location = "http://localhost:8080/PS2Projekt/widoktabeli.jsp?choose=";

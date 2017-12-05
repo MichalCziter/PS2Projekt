@@ -61,8 +61,10 @@
         	
         	
         	var myParam = location.search.split('choose=')[1];
-        	if(myParam === null){
-        		obsluga();
+        	console.log("HEHE " + myParam[0])
+        	if(myParam[0] === 'I'){
+        		
+        		return;
         		
         	}
         	else{
@@ -263,7 +265,16 @@
             function obsluga(event){
             	//alert(event.data);
             	            	
-            	var json = JSON.parse(event.data);
+            	//console.log(event.data);
+            	try{
+                	var json = JSON.parse(event.data);
+
+            	}
+            	catch(err){
+            		console.log("wyjatek");
+            		return;
+            	}
+            	//var json = event.data
             	
             	
             	//writeResponse(json.dzialanie);
@@ -306,13 +317,12 @@
                         for (var i = 0; i < myTable.length; i++) {
                             for (var key in myTable[i]) {
                                 if (col.indexOf(key) === -1) {
-                                    if(i == 0){
-                                    	
-                                    	console.log(key);
-                                    }
+                                	col.push(key);
                                 }
                             }
                         }
+                        
+                        flagaReczna = col[0];
                 		
                 		               	
                 		for (var i in a[0]) {
@@ -349,11 +359,8 @@
                     
             		
             	}
-            	if(json.dzialanie == "sukces"){
-            		//if(){
-            			
-            		//}
-            		globalInsertPowrot = json.ostatnieZapytanie;
+            	if(json.dzialanie == "sukcesTabela"){
+            		
             		
             		//writeResponse("dupa");
             		pomocniczeDodawanie = json.Tabela;
@@ -362,23 +369,54 @@
                     var parenttbl = document.getElementById('tabBOOT');
             		var a = myTable;
             		
-            		var mojThead = parenttbl.createTHead();
-            		var mojTR = mojThead.insertRow(0);
-            		               	
-            		for (var i in a[0]) {
-	                	    
-	    	                	var mojTH = document.createElement('th');
-	    	                	mojTH.setAttribute("data-field", i);
-	    	                	mojTH.setAttribute("data-sortable", 'true');
-	    	                	mojTH.innerHTML = i;
-	    	                	mojTR.appendChild(mojTH);	                	    
-   		
-                	}
-            		
-            		
-            		$('#tabBOOT').bootstrapTable({
-            		    data: myTable
-            		});
+                    var col = [];
+                    for (var i = 0; i < myTable.length; i++) {
+                        for (var key in myTable[i]) {
+                            if (col.indexOf(key) === -1) {
+                            	col.push(key);
+                            }
+                        }
+                    }
+                    
+                    flagaReczna = col[0];
+                    
+            		if(flagaReczna == location.search.split('choose=')[1]){
+            			globalInsertPowrot = json.ostatnieZapytanie;
+
+                		
+                		if(licznik==1){
+                    		
+                    		var mojThead = parenttbl.createTHead();
+                    		var mojTR = mojThead.insertRow(0);
+                    		
+
+                    		
+                    		               	
+                    		for (var i in a[0]) {
+        	                	    
+        	    	                	var mojTH = document.createElement('th');
+        	    	                	mojTH.setAttribute("data-field", i);
+        	    	                	mojTH.setAttribute("data-sortable", 'true');
+        	    	                	mojTH.innerHTML = i;
+        	    	                	mojTR.appendChild(mojTH);	                	    
+           		
+                        	}
+                    		
+                    		
+                    		
+
+                        		licznik = 2;
+                    		}
+                		
+                		
+                		$('#tabBOOT').bootstrapTable({
+                		    data: myTable
+                		});
+                		
+                		$('#tabBOOT').bootstrapTable("load", myTable);
+            			
+            		}
+
 
             		
             		
