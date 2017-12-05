@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 //import javax.inject.Inject;
@@ -18,11 +19,13 @@ import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.Statement;
 import java.sql.Types;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.sql.DriverManager;
 
 import com.google.gson.Gson;
@@ -93,9 +96,10 @@ public class EchoServer {
      * When a user sends a message to the server, this method will intercept the message
      * and allow us to react to it. For now the message is read as a String.
      * @throws JSONException 
+     * @throws InterruptedException 
      */
     @OnMessage
-    public void onMessage(String message, Session session) throws JSONException{
+    public void onMessage(String message, Session session) throws JSONException, InterruptedException{
     	
     	JSONObject jsonObj = new JSONObject(message);
     	System.out.println("ODEBRANE SPRAWDZAM");
@@ -644,10 +648,16 @@ public class EchoServer {
                     	                   	                    	
                     	JSONObject mainObj = new JSONObject();
 
-                        mainObj.put("dzialanie", "zapytanieWykonane");
+                        mainObj.put("dzialanie", "sukces");
                         mainObj.put("ostatnieZapytanie", selectSql);
+                        mainObj.put("NazwaTabeli", selectSql);
                         System.out.println(mainObj);
-                        SessionHandler.sendToallConnectedSessionsInRoom(room, mainObj.toString());
+                        if(s == session) {
+                        	SessionHandler.sendToSession(s, mainObj.toString());
+                        	TimeUnit.SECONDS.sleep(1);
+                        	SessionHandler.sendToallConnectedSessions(mainObj.toString());
+                        }
+                        
                    	                    	
                     	}
                     	catch (Exception e) {
@@ -666,12 +676,18 @@ public class EchoServer {
                                 ResultSet resultSet = statement.executeQuery(selectSql);
                             	
                             	ResultSetMetaData rsmd = resultSet.getMetaData();
+                            	                  	
+                               	String nazwaTabeli = rsmd.getColumnName(1);
+                            	
+                            	System.out.println("TO JEST NAZWA TABELI " + nazwaTabeli);
 
                             	int columnsNumber = rsmd.getColumnCount();
                             	String columnName[]=new String[10];
                             	for(int k=1;k<columnsNumber+1;k++) {
                             		columnName[k] = rsmd.getColumnName(k);
                             	}
+                            	
+  
                             	
                             	JSONArray tablicaCos = new JSONArray();
                             	JSONObject mainObj = new JSONObject();
@@ -694,17 +710,37 @@ public class EchoServer {
                                 	tablicaCos.put(obj);
                                     i++;                                                              
                                 }
+                                
                             	
-                                mainObj.put("dzialanie", "zapytanieWykonaneTabela");
+                                mainObj.put("dzialanie", "sukces");
                                 mainObj.put("Tabela", tablicaCos);
                                 mainObj.put("ostatnieZapytanie", selectSql);
+                                mainObj.put("NazwaTabeli", nazwaTabeli);
                                 System.out.println(mainObj);
-                                SessionHandler.sendToallConnectedSessionsInRoom(room, mainObj.toString());
+                                if(s == session) {
+                                	
+                                    SessionHandler.sendToSession(s, mainObj.toString());
+                                    TimeUnit.SECONDS.sleep(1);
+                                    SessionHandler.sendToallConnectedSessions(mainObj.toString());
+
+                                }
                             	   	
                             	}
                             	catch (Exception f) {
-                                    f.printStackTrace();
-                                    SessionHandler.sendToSession(session, "Blad edycji");
+                            		
+                            		//TimeUnit.SECONDS.sleep(timeout);
+                            		System.out.println("TUTAJ BLAD" + f.getMessage());
+                            		JSONObject mainObj = new JSONObject();
+                            		mainObj.put("dzialanie", "blad");
+                            		mainObj.put("bladTekst", f.getMessage());
+                            		mainObj.put("kodBledu", ((SQLException)f).getErrorCode());
+                            		
+
+                                        SessionHandler.sendToallConnectedSessions(mainObj.toString());
+                                        TimeUnit.SECONDS.sleep(1);
+                                        SessionHandler.sendToallConnectedSessions(mainObj.toString());
+
+                                    
                                 }
                         }
                     }

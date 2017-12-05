@@ -59,17 +59,25 @@
         }
         function poprosTabele(){
         	
-        	var myParam = location.search.split('choose=')[1];
-        	var text = myParam;
         	
-        	var obj = new Object();
-        	obj.dzialanie = "Tabela";
-        	obj.tabela = text;
-        	var jsonString= JSON.stringify(obj);
-			
-        	//writeResponse(jsonString + "Dziala xDDdD");
-            webSocket.send(jsonString);
-        	//writeResponse("POSZLO");
+        	var myParam = location.search.split('choose=')[1];
+        	if(myParam === null){
+        		obsluga();
+        		
+        	}
+        	else{
+            	var text = myParam;
+            	
+            	var obj = new Object();
+            	obj.dzialanie = "Tabela";
+            	obj.tabela = text;
+            	var jsonString= JSON.stringify(obj);
+    			
+            	//writeResponse(jsonString + "Dziala xDDdD");
+                webSocket.send(jsonString);
+            	//writeResponse("POSZLO");
+        	}
+
         	
         	
         }
@@ -104,6 +112,7 @@
         }
         var pomocniczeDodawanie;
         var licznik=1;
+        var flagaReczna;
         
         window.onunload = function(){
         	closeSocket();
@@ -118,11 +127,11 @@
         	
         </div>
         <div>
-        	<button type="button" onclick="poprosTabele();" >KLIKAJ TUTAJ</button>
-            <button type="button" onclick="naGlowna();" >Wroc na glowna</button>
-            <button type="button" onclick="dodajWpis();" >DODAJ</button>
-            <button type="button" onclick="usunWpis();" >USUN</button>
-            <button type="button" onclick="edytujWpis();" >EDYTUJ</button>
+        	<!--  <button id = "1" type="button" onclick="poprosTabele();" >KLIKAJ TUTAJ</button> -->
+            <button id = "glownaButton" type="button" onclick="naGlowna();" >Wroc na glowna</button>
+            <button id = "1" type="button" onclick="dodajWpis();" >DODAJ</button>
+            <button id = "2" type="button" onclick="usunWpis();" >USUN</button>
+            <button id = "3" type="button" onclick="edytujWpis();" >EDYTUJ</button>
 
 <div id="tabela">
 <!-- TU BEDA TABELE NARYSOWANE -->
@@ -255,6 +264,8 @@
             	//alert(event.data);
             	            	
             	var json = JSON.parse(event.data);
+            	
+            	
             	//writeResponse(json.dzialanie);
             	if (json.dzialanie == "tabele"){
             		var div = document.querySelector("#container"),
@@ -269,6 +280,8 @@
 
             		frag.appendChild(select);
             		div.appendChild(frag);
+            		
+            		
             		
             	}
             	if(json.dzialanie == "wysylamTabele"){
@@ -288,6 +301,18 @@
                 		
                 		var mojThead = parenttbl.createTHead();
                 		var mojTR = mojThead.insertRow(0);
+                		
+                        var col = [];
+                        for (var i = 0; i < myTable.length; i++) {
+                            for (var key in myTable[i]) {
+                                if (col.indexOf(key) === -1) {
+                                    if(i == 0){
+                                    	
+                                    	console.log(key);
+                                    }
+                                }
+                            }
+                        }
                 		
                 		               	
                 		for (var i in a[0]) {
@@ -314,17 +339,20 @@
             		}
             		
 
-
+					
                 
 
             	}
-            	if(json.dzialanie=="zapytanieWykonane"){
+            	if(json.dzialanie=="sukces"){
             		alert("UPDATE SUCCEDED");
                     globalUpdatePowrot = json.ostatnieZapytanie;
                     
             		
             	}
-            	if(json.dzialanie == "zapytanieWykonaneTabela"){
+            	if(json.dzialanie == "sukces"){
+            		//if(){
+            			
+            		//}
             		globalInsertPowrot = json.ostatnieZapytanie;
             		
             		//writeResponse("dupa");
@@ -355,6 +383,24 @@
             		
             		
 				        
+            	}
+            	if(json.dzialanie == "blad"){
+            		var bladParametr = location.search.split('choose=')[1];
+            		if( bladParametr == json.kodBledu){
+            			//document.getElementByID("1").remove();
+            			for(var i = 1; i<4; i++ ){
+            				var elem = document.getElementById(i.toString());
+            				elem.parentNode.removeChild(elem);
+            				
+            			}
+
+                		writeResponse("Tekst bledu:" +json.bladTekst);
+                		writeResponse("Kod bledu: "+json.kodBledu);
+            		}
+            		else return;
+
+            		
+            		
             	}
             	
             }

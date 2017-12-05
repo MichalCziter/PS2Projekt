@@ -64,6 +64,7 @@
 
         window.onload = function(){
         	
+        	
         	openSocket();
 
         	
@@ -76,7 +77,7 @@
         window.onunload = function(){
         	closeSocket();
 
-        }
+        } 
         </script>
     </head>
     <body>
@@ -145,6 +146,14 @@
             		div.appendChild(frag);
             		
             	}
+            	if(json.dzialanie == "blad"){
+            		window.location = "http://localhost:8080/PS2Projekt/widoktabeli.jsp?choose=" + json.kodBledu;
+            		
+            	}
+            	if(json.dzialanie == "sukces"){
+            		
+            		window.location = "http://localhost:8080/PS2Projekt/widoktabeli.jsp?choose=" + json.NazwaTabeli;
+            	}
             	
             }
             function wyslijZapytanie(){
@@ -154,11 +163,12 @@
             	objZapytanie.komenda = e;
             	var jsonZapytanie = JSON.stringify(objZapytanie);
             	//writeResponse(jsonZapytanie);
-            	window.location = "http://localhost:8080/PS2Projekt/widoktabeli.jsp";
-            	//windows.location = "http://kapustatest.azurewebsites.net/PS2Projekt/widoktabeli.jsp";
             	webSocket.send(jsonZapytanie);
+            	//window.location = "http://localhost:8080/PS2Projekt/widoktabeli.jsp?choose=";
+            	//window.location = "http://kapustatest.azurewebsites.net/PS2Projekt/widoktabeli.jsp";
             	
-            	closeSocket();
+            	
+            	//closeSocket();
             	
             	
             }
