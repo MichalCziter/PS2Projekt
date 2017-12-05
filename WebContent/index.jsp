@@ -9,7 +9,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
           <script type="text/javascript">
-        window.onload = function openSocket(){
+        function openSocket(){
             // Ensures only one connection is open at a time
             if(webSocket !== undefined && webSocket.readyState !== WebSocket.CLOSED){
                writeResponse("WebSocket is already opened.");
@@ -43,9 +43,39 @@
             
             
         }
+        
+        function waitForSocketConnection(socket, callback){
+            setTimeout(
+                function () {
+                    if (socket.readyState === 1) {
+                        console.log("Connection is made")
+                        if(callback != null){
+                            callback();
+                        }
+                        return;
 
+                    } else {
+                        console.log("wait for connection...")
+                        waitForSocketConnection(socket, callback);
+                    }
+
+                }, 5); // wait 5 milisecond for the connection...
+        }
+
+        window.onload = function(){
+        	
+        	openSocket();
+
+        	
+            waitForSocketConnection(webSocket, function(){
+                
+            	pobierzNazwy();
+            });
+        }
+        
         window.onunload = function(){
         	closeSocket();
+
         }
         </script>
     </head>

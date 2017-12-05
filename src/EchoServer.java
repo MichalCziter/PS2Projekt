@@ -378,6 +378,8 @@ public class EchoServer {
                     }
                     if(proszedzialaj.equals("Edytuj")) {
                     	try {
+                    		if(s == session) {
+
                     	Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
                         connection = DriverManager.getConnection(url);
                         String schema = connection.getSchema();
@@ -428,8 +430,11 @@ public class EchoServer {
                     	
                         mainObj.put("dzialanie", "wysylamTabele");
                         mainObj.put("Tabela", tablicaCos);
+                        mainObj.put("NazwaTabeli", wybranaTabela);
+
                         System.out.println(mainObj);
                         SessionHandler.sendToallConnectedSessionsInRoom(room, mainObj.toString());
+                    	}
 
                     	
                     	
@@ -442,6 +447,8 @@ public class EchoServer {
                     }
                     if(proszedzialaj.equals("Usun")) {
                     	try {
+                    		if(s == session) {
+
                     	Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
                         connection = DriverManager.getConnection(url);
                         String schema = connection.getSchema();
@@ -492,9 +499,12 @@ public class EchoServer {
                     	
                         mainObj.put("dzialanie", "wysylamTabele");
                         mainObj.put("Tabela", tablicaCos);
+                        mainObj.put("NazwaTabeli", wybranaTabela);
+
                         //mainObj.put("NazwaTabeli", wybranaTabela);
                         System.out.println(mainObj);
                         SessionHandler.sendToallConnectedSessionsInRoom(room, mainObj.toString());
+                    	}
 
                     	
                     	
