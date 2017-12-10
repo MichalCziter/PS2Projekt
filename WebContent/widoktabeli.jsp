@@ -36,8 +36,8 @@
 		}
 		// Create a new instance of the websocket
 		webSocket = new WebSocket(
-				"ws://localhost:8080/PS2Projekt/echo/roomnumber");
-		//webSocket = new WebSocket("ws://kapustatest.azurewebsites.net/PS2Projekt/echo/roomnumber");
+				"wss://ps2projekt2017.azurewebsites.net/PS2Projekt/echo/roomnumber");
+		//webSocket = new WebSocket("wss://kapustatest.azurewebsites.net/PS2Projekt/echo/roomnumber");
 
 		writeResponse("Otwarlem sie WIDOKTABELI");
 		/**
@@ -129,6 +129,10 @@
 		<button id="1" type="button" onclick="dodajWpis();">DODAJ</button>
 		<button id="2" type="button" onclick="usunWpis();">USUN</button>
 		<button id="3" type="button" onclick="edytujWpis();">EDYTUJ</button>
+		
+	<div class="right">
+        <a href="https://ps2projekt2017.azurewebsites.net/.auth/logout" class="btn btn-default">WYLOGUJ SIE</a>
+    </div>
 
 		<div id="tabela">
 			<!-- TU BEDA TABELE NARYSOWANE -->
@@ -401,12 +405,12 @@
 			}
 			else {
 				
-				window.location = "http://localhost:8080/PS2Projekt/index.jsp";
+				window.location = "https://ps2projekt2017.azurewebsites.net/PS2Projekt/index.jsp";
 			}
 
 			
 
-			window.location = "http://localhost:8080/PS2Projekt/index.jsp?choose="
+			window.location = "https://ps2projekt2017.azurewebsites.net/PS2Projekt/index.jsp?choose="
 					+ strUser;
 			//window.location = "http://kapustatest.azurewebsites.net/PS2Projekt/index.jsp?choose="+strUser;
 

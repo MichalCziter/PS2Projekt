@@ -20,9 +20,8 @@
 			return;
 		}
 		// Create a new instance of the websocket
-		webSocket = new WebSocket(
-				"ws://localhost:8080/PS2Projekt/echo/roomnumber");
-		//webSocket = new WebSocket("ws://kapustatest.azurewebsites.net/PS2Projekt/echo/roomnumber");
+		//webSocket = new WebSocket("ws://localhost:8080/PS2Projekt/echo/roomnumber");
+		webSocket = new WebSocket("wss://ps2projekt2017.azurewebsites.net/PS2Projekt/echo/roomnumber");
 		writeResponse("Otwarlem sie");
 		/**
 		 * Binds functions to the listeners for the websocket.
@@ -85,8 +84,14 @@
 
 	<div>
 		SQL Command :<input type="text" size="70" id="sqlinput" />
-		<button type="button" onclick="wyslijZapytanie();">Wyslij
-			Zapytanie</button>
+		
+		<button type="button" onclick="wyslijZapytanie();">Wyslij Zapytanie</button>
+		
+		
+	<div class="right">
+        <a href="https://ps2projekt2017.azurewebsites.net/.auth/logout" class="btn btn-default">WYLOGUJ SIE</a>
+    </div>
+		
 	</div>
 	<div id="container"></div>
 	<div>
@@ -144,7 +149,7 @@
 			}
 			if (json.dzialanie == "blad") {
 				if (licznikZapytan == 2) {
-					window.location = "http://localhost:8080/PS2Projekt/widoktabeli.jsp?choose="
+					window.location = "https://ps2projekt2017.azurewebsites.net/PS2Projekt/widoktabeli.jsp?choose="
 							+ json.kodBledu;
 
 				}
@@ -152,7 +157,7 @@
 			}
 			if (json.dzialanie == "sukcesTabela") {
 				if (licznikZapytan == 2) {
-					window.location = "http://localhost:8080/PS2Projekt/widoktabeli.jsp?choose="
+					window.location = "https://ps2projekt2017.azurewebsites.net/PS2Projekt/widoktabeli.jsp?choose="
 							+ json.NazwaTabeli;
 
 				} else
@@ -161,7 +166,7 @@
 			}
 			if (json.dzialanie == "sukces") {
 				if (licznikZapytan == 2) {
-					window.location = "http://localhost:8080/PS2Projekt/widoktabeli.jsp?choose=I";
+					window.location = "https://ps2projekt2017.azurewebsites.net/PS2Projekt/widoktabeli.jsp?choose=I"; 
 
 				} else
 					return;
@@ -190,7 +195,7 @@
 				alert("dupa");
 			}
 
-			window.location = "http://localhost:8080/PS2Projekt/widoktabeli.jsp?choose="
+			window.location = "https://ps2projekt2017.azurewebsites.net/PS2Projekt/widoktabeli.jsp?choose="
 					+ strUser;
 			//window.location = "http://kapustatest.azurewebsites.net/PS2Projekt/widoktabeli.jsp?choose=" + strUser;
 
