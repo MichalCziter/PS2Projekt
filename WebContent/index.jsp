@@ -129,6 +129,7 @@
             }
             
             function obsluga(event){
+            	console.log(event.data);
             	            	
             	var json = JSON.parse(event.data);
             	writeResponse(json.dzialanie);
