@@ -34,8 +34,9 @@ public class SessionHandler {
 		try {
 			session.getBasicRemote().sendText(message.toString());
 		} catch (IOException ex) {
-			sessions.remove(session);
-			Logger.getLogger(SessionHandler.class.getName()).log(Level.SEVERE, null, ex);
+			//sessions.remove(session);
+			//Logger.getLogger(SessionHandler.class.getName()).log(Level.SEVERE, null, ex);
+			System.out.println("Blad " + ex);
 		}
 	}
 

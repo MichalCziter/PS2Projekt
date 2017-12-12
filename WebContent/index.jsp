@@ -16,13 +16,14 @@
 		// Ensures only one connection is open at a time
 		if (webSocket !== undefined
 				&& webSocket.readyState !== WebSocket.CLOSED) {
-			writeResponse("WebSocket is already opened.");
+			console.log("WebSocket is already opened.");
 			return;
 		}
 		// Create a new instance of the websocket
 		//webSocket = new WebSocket("ws://localhost:8080/PS2Projekt/echo/roomnumber");
-		webSocket = new WebSocket("wss://ps2projekt2017.azurewebsites.net/PS2Projekt/echo/roomnumber");
-		writeResponse("Otwarlem sie");
+		//webSocket = new WebSocket("wss://ps2projekt2017.azurewebsites.net/PS2Projekt/echo/roomnumber");
+		webSocket = new WebSocket("ws://localhost:8080/PS2Projekt/echo/roomnumber");
+		console.log("Otwarlem sie");
 		/**
 		 * Binds functions to the listeners for the websocket.
 		 */
@@ -33,16 +34,16 @@
 			if (event.data === undefined)
 				return;
 
-			writeResponse(event.data);
+			console.log(event.data);
 		};
 
 		webSocket.onmessage = function(event) {
 			obsluga(event);
-			writeResponse(event.data);
+			console.log(event.data);
 		};
 
 		webSocket.onclose = function(event) {
-			writeResponse("Connection closed");
+			console.log("Connection closed");
 		};
 
 	}
@@ -82,23 +83,20 @@
 </head>
 <body>
 
-	<div>
+	<div id="login" style="font-size:180%">
+        <a href="https://ps2projekt2017.azurewebsites.net/.auth/logout" class="btn btn-default" align="right">WYLOGUJ SIE</a>
+	</div>
+	<div> 
+	<br/>
 		SQL Command :<input type="text" size="70" id="sqlinput" />
 		
 		<button type="button" onclick="wyslijZapytanie();">Wyslij Zapytanie</button>
-		
-		
-	<div class="right">
-        <a href="https://ps2projekt2017.azurewebsites.net/.auth/logout" class="btn btn-default">WYLOGUJ SIE</a>
-    </div>
+	
 		
 	</div>
-	<div id="container"></div>
-	<div>
-		<button type="button" onclick="pobierzNazwy();">Pobierz
-			Tabele</button>
-		<button type="button" onclick="pokazZawartosc();">Pokaz
-			Zawartosc tabeli</button>
+	<div id="container" style="font-size:130%" > <br/></div>
+	<div><br/>
+		<button type="button" onclick="pokazZawartosc();">Pokaz Zawartosc tabeli</button>
 
 		<div id="tabela">
 			<!-- TU BEDA TABELE NARYSOWANE -->
@@ -110,10 +108,35 @@
 
 	<!-- Script to utilise the WebSocket -->
 	<script type="text/javascript">
+	
+	/*$.ajax({
+	    url: 'https://ps2projekt2017.azurewebsites.net/.auth/me',
+	    type: 'GET',
+	    dataType: "json",
+	    success: displayAll
+	});*/
+
+	function displayAll(data){
+
+		var obj = data[0];
+		
+		var theDiv = document.getElementById("login");
+		var content = document.createTextNode("Zalogowano jako:  " + obj.user_id);
+		theDiv.appendChild(content);
+
+	}
+	
 		var licznikZapytan = 1;
 
 		var domyslny = location.search.split('choose=')[1];
-		if (domyslny != null) {
+		domyslny = decodeURIComponent(domyslny);
+
+		
+		if (domyslny == "undefined") {
+			document.getElementById('sqlinput').value = null;
+		}
+		
+		else if (domyslny != null) {
 			document.getElementById('sqlinput').value = domyslny;
 		}
 
@@ -131,7 +154,7 @@
 		function obsluga(event) {
 
 			var json = JSON.parse(event.data);
-			writeResponse(json.dzialanie);
+			console.log(json.dzialanie);
 			console.log(licznikZapytan);
 			if (json.dzialanie == "tabele") {
 				var div = document.querySelector("#container"), frag = document
@@ -149,16 +172,20 @@
 			}
 			if (json.dzialanie == "blad") {
 				if (licznikZapytan == 2) {
-					window.location = "https://ps2projekt2017.azurewebsites.net/PS2Projekt/widoktabeli.jsp?choose="
-							+ json.kodBledu;
+					//window.location = "https://ps2projekt2017.azurewebsites.net/PS2Projekt/widoktabeli.jsp?choose="
+					//		+ json.kodBledu;
+					window.location = "http://localhost:8080/PS2Projekt/widoktabeli.jsp?choose="
+						+ json.kodBledu;
 
 				}
 
 			}
 			if (json.dzialanie == "sukcesTabela") {
 				if (licznikZapytan == 2) {
-					window.location = "https://ps2projekt2017.azurewebsites.net/PS2Projekt/widoktabeli.jsp?choose="
-							+ json.NazwaTabeli;
+					//window.location = "https://ps2projekt2017.azurewebsites.net/PS2Projekt/widoktabeli.jsp?choose="
+					//		+ json.NazwaTabeli;
+					window.location = "http://localhost:8080/PS2Projekt/widoktabeli.jsp?choose="
+						+ json.NazwaTabeli;
 
 				} else
 					return;
@@ -166,7 +193,8 @@
 			}
 			if (json.dzialanie == "sukces") {
 				if (licznikZapytan == 2) {
-					window.location = "https://ps2projekt2017.azurewebsites.net/PS2Projekt/widoktabeli.jsp?choose=I"; 
+					//window.location = "https://ps2projekt2017.azurewebsites.net/PS2Projekt/widoktabeli.jsp?choose=I";
+					window.location = "http://localhost:8080/PS2Projekt/widoktabeli.jsp?choose=I"; 
 
 				} else
 					return;
@@ -189,15 +217,11 @@
 			var e = document.getElementById("wybor");
 			var strUser = e.options[e.selectedIndex].text;
 
-			if (strUser == "Malarze") {
-				alert("DOBRZE");
-			} else {
-				alert("dupa");
-			}
 
-			window.location = "https://ps2projekt2017.azurewebsites.net/PS2Projekt/widoktabeli.jsp?choose="
-					+ strUser;
-			//window.location = "http://kapustatest.azurewebsites.net/PS2Projekt/widoktabeli.jsp?choose=" + strUser;
+			//window.location = "https://ps2projekt2017.azurewebsites.net/PS2Projekt/widoktabeli.jsp?choose="
+			//		+ strUser;
+			window.location = "http://localhost:8080/PS2Projekt/widoktabeli.jsp?choose=" + strUser;
+
 
 			closeSocket();
 		}
@@ -206,17 +230,13 @@
 			webSocket.close();
 		}
 
-		function writeResponse(text) {
-			messages.innerHTML += "<br/>" + text;
-		}
 
 		function pobierzNazwy() {
-			alert('o');
 			var text = "Pobierz"
 			var obj = new Object();
 			obj.dzialanie = "Pobierz";
 			var jsonString = JSON.stringify(obj);
-			writeResponse(jsonString);
+			console.log(jsonString);
 			webSocket.send(jsonString);
 		}
 	</script>

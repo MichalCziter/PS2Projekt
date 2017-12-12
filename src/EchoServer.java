@@ -62,13 +62,9 @@ public class EchoServer {
 	public void onOpen(Session session, @PathParam("roomnumber") String roomnumber)
 			throws IOException, EncodeException {
 		System.out.println(session.getId() + " has opened a connection");
-		System.out.println("ok1");
 		session.getUserProperties().put("roomnumber", roomnumber);
-		System.out.println("ok2");
-		System.out.println("ok3");
 		SessionHandler.addSession(session);
-		System.out.println("ok4");
-		System.out.println("ok5");
+
 
 	}
 
@@ -87,14 +83,14 @@ public class EchoServer {
 		System.out.println(message);
 		System.out.println("SPRAWDZAM JSON");
 		System.out.println(jsonObj);
-		String proszedzialaj = jsonObj.getString("dzialanie");
+		String dzialanieKlienta = jsonObj.getString("dzialanie");
 
 		String room = (String) session.getUserProperties().get("roomnumber");
 		try {
 			for (Session s : session.getOpenSessions()) {
 				if (s.isOpen() && s.getUserProperties().get("roomnumber").equals(room)) {
 
-					if (proszedzialaj.equals("Pobierz")) {
+					if (dzialanieKlienta.equals("Pobierz")) {
 						try {
 
 							Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
@@ -108,8 +104,8 @@ public class EchoServer {
 
 							ResultSet resultSet = statement.executeQuery(selectSql);
 
-							JSONObject cos = new JSONObject();
-							cos.put("dzialanie", "tabele");
+							JSONObject record = new JSONObject();
+							record.put("dzialanie", "tabele");
 							String licznik;
 
 							int i = 0;
@@ -119,15 +115,16 @@ public class EchoServer {
 								arr[i] = em;
 								licznik = "tabela" + String.valueOf(i);
 
-								cos.put(licznik, em);
+								record.put(licznik, em);
 								i++;
 
 							}
 
-							System.out.println(cos.toString());
+							System.out.println(record.toString());
 
 							if (s == session) {
-								SessionHandler.sendToSession(s, cos.toString());
+								TimeUnit.SECONDS.sleep(1);
+								SessionHandler.sendToSession(s, record.toString());
 							}
 
 						} catch (Exception e) {
@@ -136,7 +133,7 @@ public class EchoServer {
 						}
 
 					}
-					if (proszedzialaj.equals("Tabela")) {
+					if (dzialanieKlienta.equals("Tabela")) {
 						try {
 
 							Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
@@ -160,8 +157,7 @@ public class EchoServer {
 
 							System.out.println(columnsNumber);
 
-							JSONArray tablicaCos = new JSONArray();
-							JSONArray tablicaCos2 = new JSONArray();
+							JSONArray tablicaRecordow = new JSONArray();
 							JSONObject mainObj = new JSONObject();
 
 							String licznik = " ";
@@ -174,7 +170,7 @@ public class EchoServer {
 							while (resultSet.next()) {
 
 								Map<String, String> obj = new LinkedHashMap<String, String>();
-								JSONObject cos = new JSONObject();
+								JSONObject record = new JSONObject();
 
 								for (j = 1; j < columnsNumber + 1; j++) {
 
@@ -183,18 +179,16 @@ public class EchoServer {
 
 									obj.put(licznik, arr1[j]);
 
-									tablicaCos2.put(cos);
-
 								}
 
 								lista.add(obj);
 
-								tablicaCos.put(obj);
+								tablicaRecordow.put(obj);
 
 							}
 
 							mainObj.put("dzialanie", "wysylamTabele");
-							mainObj.put("Tabela", tablicaCos);
+							mainObj.put("Tabela", tablicaRecordow);
 							mainObj.put("NazwaTabeli", wybranaTabela);
 
 							System.out.println(mainObj.toString());
@@ -209,7 +203,7 @@ public class EchoServer {
 						}
 
 					}
-					if (proszedzialaj.equals("Edytuj")) {
+					if (dzialanieKlienta.equals("Edytuj")) {
 						try {
 							if (s == session) {
 
@@ -237,7 +231,7 @@ public class EchoServer {
 									columnName[k] = rsmd.getColumnName(k);
 								}
 
-								JSONArray tablicaCos = new JSONArray();
+								JSONArray tablicaRecordow = new JSONArray();
 								JSONObject mainObj = new JSONObject();
 
 								String licznik = " ";
@@ -254,12 +248,12 @@ public class EchoServer {
 										licznik = columnName[j];
 										obj.put(licznik, arr1[j]);
 									}
-									tablicaCos.put(obj);
+									tablicaRecordow.put(obj);
 
 								}
 
 								mainObj.put("dzialanie", "wysylamTabele");
-								mainObj.put("Tabela", tablicaCos);
+								mainObj.put("Tabela", tablicaRecordow);
 								mainObj.put("NazwaTabeli", wybranaTabela);
 
 								System.out.println(mainObj);
@@ -272,7 +266,7 @@ public class EchoServer {
 						}
 
 					}
-					if (proszedzialaj.equals("Usun")) {
+					if (dzialanieKlienta.equals("Usun")) {
 						try {
 							if (s == session) {
 
@@ -300,7 +294,7 @@ public class EchoServer {
 									columnName[k] = rsmd.getColumnName(k);
 								}
 
-								JSONArray tablicaCos = new JSONArray();
+								JSONArray tablicaRecordow = new JSONArray();
 								JSONObject mainObj = new JSONObject();
 
 								String licznik = " ";
@@ -317,12 +311,12 @@ public class EchoServer {
 										licznik = columnName[j];
 										obj.put(licznik, arr1[j]);
 									}
-									tablicaCos.put(obj);
+									tablicaRecordow.put(obj);
 
 								}
 
 								mainObj.put("dzialanie", "wysylamTabele");
-								mainObj.put("Tabela", tablicaCos);
+								mainObj.put("Tabela", tablicaRecordow);
 								mainObj.put("NazwaTabeli", wybranaTabela);
 
 								System.out.println(mainObj);
@@ -335,7 +329,7 @@ public class EchoServer {
 						}
 
 					}
-					if (proszedzialaj.equals("Dodaj")) {
+					if (dzialanieKlienta.equals("Dodaj")) {
 						try {
 							if (s == session) {
 								Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
@@ -353,14 +347,25 @@ public class EchoServer {
 
 								ResultSet rs = statement.executeQuery(selectSql);
 
+								///////////////////////////////////////
+	
+								
+								
+								//////////////////////
 								String zapytanie = "INSERT INTO dbo." + wybranaTabela + " VALUES (";
 
 								rs.next();
 								ResultSetMetaData rsmd = rs.getMetaData();
+								int wyjebka = 0;
 								for (int i = 2; i <= rsmd.getColumnCount(); i++) {
 
 									int type = rsmd.getColumnType(i);
-									if (i == (rsmd.getColumnCount())) {
+									if(jsonObj.isNull(jsonObj.names().getString(i - 1))) {
+										wyjebka = 1;
+										break;
+										
+									}
+									else if (i == (rsmd.getColumnCount())) {
 										if (type == Types.VARCHAR || type == Types.CHAR) {
 
 											zapytanie = new StringBuilder(zapytanie).append("'").toString();
@@ -387,13 +392,17 @@ public class EchoServer {
 										zapytanie = new StringBuilder(zapytanie).append(", ").toString();
 									}
 								}
-								System.out.println("ZAPYTANIE");
-								zapytanie = new StringBuilder(zapytanie).append(")").toString();
+								if(wyjebka == 1) {
+									System.out.println("ZAPYTANIE");
+									zapytanie = new StringBuilder(zapytanie).append(")").toString();
 
-								System.out.println(zapytanie);
-								System.out.println("ZAPYTANIE");
+									System.out.println(zapytanie);
+									System.out.println("ZAPYTANIE");
 
-								statement.executeUpdate(zapytanie);
+									statement.executeUpdate(zapytanie);
+								}
+
+								///////////////////////////////
 								ResultSet resultSet = statement.executeQuery(selectSql);
 
 								rsmd = resultSet.getMetaData();
@@ -404,7 +413,7 @@ public class EchoServer {
 									columnName[k] = rsmd.getColumnName(k);
 								}
 
-								JSONArray tablicaCos = new JSONArray();
+								JSONArray tablicaRecordow = new JSONArray();
 								JSONObject mainObj = new JSONObject();
 
 								String licznik = " ";
@@ -421,12 +430,12 @@ public class EchoServer {
 										licznik = columnName[j];
 										obj.put(licznik, arr1[j]);
 									}
-									tablicaCos.put(obj);
+									tablicaRecordow.put(obj);
 
 								}
 
 								mainObj.put("dzialanie", "wysylamTabele");
-								mainObj.put("Tabela", tablicaCos);
+								mainObj.put("Tabela", tablicaRecordow);
 								mainObj.put("NazwaTabeli", wybranaTabela);
 								System.out.println(mainObj);
 								SessionHandler.sendToallConnectedSessionsInRoom(room, mainObj.toString());
@@ -438,7 +447,7 @@ public class EchoServer {
 						}
 
 					}
-					if (proszedzialaj.equals("Zapytanie")) {
+					if (dzialanieKlienta.equals("Zapytanie")) {
 						try {
 							Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 							connection = DriverManager.getConnection(url);
@@ -488,7 +497,7 @@ public class EchoServer {
 									columnName[k] = rsmd.getColumnName(k);
 								}
 
-								JSONArray tablicaCos = new JSONArray();
+								JSONArray tablicaRecordow = new JSONArray();
 								JSONObject mainObj = new JSONObject();
 
 								String licznik = " ";
@@ -505,12 +514,12 @@ public class EchoServer {
 										licznik = columnName[j];
 										obj.put(licznik, arr1[j]);
 									}
-									tablicaCos.put(obj);
+									tablicaRecordow.put(obj);
 
 								}
 
 								mainObj.put("dzialanie", "sukcesTabela");
-								mainObj.put("Tabela", tablicaCos);
+								mainObj.put("Tabela", tablicaRecordow);
 								mainObj.put("ostatnieZapytanie", selectSql);
 								mainObj.put("NazwaTabeli", nazwaTabeli);
 								System.out.println(mainObj);
