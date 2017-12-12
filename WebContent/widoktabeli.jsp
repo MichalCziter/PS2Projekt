@@ -32,7 +32,7 @@ $.ajax({
     type: 'GET',
     dataType: "json",
     success: displayAll
-});
+}); 
 
 function displayAll(data){
 
