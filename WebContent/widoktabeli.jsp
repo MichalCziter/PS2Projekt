@@ -407,8 +407,8 @@ function displayAll(data){
 
 					}
 
-					console.log("Tekst bledu:" + json.bladTekst);
-					console.log("Kod bledu: " + json.kodBledu);
+					wypiszTekst("Tekst bledu:" + json.bladTekst);
+					wypiszTekst("Kod bledu: " + json.kodBledu);
 				} else
 					return;
 
@@ -447,6 +447,10 @@ function displayAll(data){
 
 		function closeSocket() {
 			webSocket.close();
+		}
+		
+		function wypiszTekst(text) {
+			messages.innerHTML += "<br />" + text;
 		}
 
 	</script>
