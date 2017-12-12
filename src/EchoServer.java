@@ -400,8 +400,7 @@ public class EchoServer {
 									System.out.println("ZAPYTANIE");
 
 									statement.executeUpdate(zapytanie);
-								}
-
+								}  
 								///////////////////////////////
 								ResultSet resultSet = statement.executeQuery(selectSql);
 
