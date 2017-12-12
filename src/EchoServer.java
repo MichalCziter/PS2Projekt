@@ -356,12 +356,12 @@ public class EchoServer {
 
 								rs.next();
 								ResultSetMetaData rsmd = rs.getMetaData();
-								int wyjebka = 0;
+								int flgaNull = 0;
 								for (int i = 2; i <= rsmd.getColumnCount(); i++) {
 
 									int type = rsmd.getColumnType(i);
 									if(jsonObj.isNull(jsonObj.names().getString(i - 1))) {
-										wyjebka = 1;
+										flgaNull = 1;
 										break;
 										
 									}
@@ -392,7 +392,7 @@ public class EchoServer {
 										zapytanie = new StringBuilder(zapytanie).append(", ").toString();
 									}
 								}
-								if(wyjebka == 1) {
+								if(flgaNull != 1) {
 									System.out.println("ZAPYTANIE");
 									zapytanie = new StringBuilder(zapytanie).append(")").toString();
 
