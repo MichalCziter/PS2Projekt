@@ -54,8 +54,8 @@ function displayAll(data){
 			return;
 		}
 		// Create a new instance of the websocket
-		//webSocket = new WebSocket("wss://ps2projekt2017.azurewebsites.net/PS2Projekt/echo/roomnumber");
-		webSocket = new WebSocket("ws://localhost:8080/PS2Projekt/echo/roomnumber");
+		webSocket = new WebSocket("wss://ps2projekt2017.azurewebsites.net/PS2Projekt/echo/roomnumber");
+		//webSocket = new WebSocket("ws://localhost:8080/PS2Projekt/echo/roomnumber");
 
 		console.log("Otwarlem sie WIDOKTABELI");
 		/**
@@ -432,16 +432,16 @@ function displayAll(data){
 			}
 			else {
 				
-				//window.location = "https://ps2projekt2017.azurewebsites.net/PS2Projekt/index.jsp";
-				window.location = "http://localhost:8080/PS2Projekt/index.jsp";
+				window.location = "https://ps2projekt2017.azurewebsites.net/PS2Projekt/index.jsp";
+				//window.location = "http://localhost:8080/PS2Projekt/index.jsp";
 				
 			}
 
 			
 
-			//window.location = "https://ps2projekt2017.azurewebsites.net/PS2Projekt/index.jsp?choose="
-			//		+ strUser;
-			window.location = "http://localhost:8080/PS2Projekt/index.jsp?choose="+strUser;
+			window.location = "https://ps2projekt2017.azurewebsites.net/PS2Projekt/index.jsp?choose="
+				+ strUser;
+			//window.location = "http://localhost:8080/PS2Projekt/index.jsp?choose="+strUser;
 
 		}
 

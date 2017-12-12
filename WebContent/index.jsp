@@ -21,8 +21,8 @@
 		}
 		// Create a new instance of the websocket
 		//webSocket = new WebSocket("ws://localhost:8080/PS2Projekt/echo/roomnumber");
-		//webSocket = new WebSocket("wss://ps2projekt2017.azurewebsites.net/PS2Projekt/echo/roomnumber");
-		webSocket = new WebSocket("ws://localhost:8080/PS2Projekt/echo/roomnumber");
+		webSocket = new WebSocket("wss://ps2projekt2017.azurewebsites.net/PS2Projekt/echo/roomnumber");
+		//webSocket = new WebSocket("ws://localhost:8080/PS2Projekt/echo/roomnumber");
 		console.log("Otwarlem sie");
 		/**
 		 * Binds functions to the listeners for the websocket.
@@ -172,20 +172,18 @@
 			}
 			if (json.dzialanie == "blad") {
 				if (licznikZapytan == 2) {
-					//window.location = "https://ps2projekt2017.azurewebsites.net/PS2Projekt/widoktabeli.jsp?choose="
-					//		+ json.kodBledu;
-					window.location = "http://localhost:8080/PS2Projekt/widoktabeli.jsp?choose="
-						+ json.kodBledu;
+					window.location = "https://ps2projekt2017.azurewebsites.net/PS2Projekt/widoktabeli.jsp?choose="+ json.kodBledu;
+					//window.location = "http://localhost:8080/PS2Projekt/widoktabeli.jsp?choose="+ json.kodBledu;
 
 				}
 
 			}
 			if (json.dzialanie == "sukcesTabela") {
 				if (licznikZapytan == 2) {
-					//window.location = "https://ps2projekt2017.azurewebsites.net/PS2Projekt/widoktabeli.jsp?choose="
-					//		+ json.NazwaTabeli;
-					window.location = "http://localhost:8080/PS2Projekt/widoktabeli.jsp?choose="
-						+ json.NazwaTabeli;
+					window.location = "https://ps2projekt2017.azurewebsites.net/PS2Projekt/widoktabeli.jsp?choose="
+							+ json.NazwaTabeli;
+					//window.location = "http://localhost:8080/PS2Projekt/widoktabeli.jsp?choose="
+					//	+ json.NazwaTabeli;
 
 				} else
 					return;
@@ -193,8 +191,8 @@
 			}
 			if (json.dzialanie == "sukces") {
 				if (licznikZapytan == 2) {
-					//window.location = "https://ps2projekt2017.azurewebsites.net/PS2Projekt/widoktabeli.jsp?choose=I";
-					window.location = "http://localhost:8080/PS2Projekt/widoktabeli.jsp?choose=I"; 
+					window.location = "https://ps2projekt2017.azurewebsites.net/PS2Projekt/widoktabeli.jsp?choose=I";
+					//window.location = "http://localhost:8080/PS2Projekt/widoktabeli.jsp?choose=I"; 
 
 				} else
 					return;
@@ -218,9 +216,9 @@
 			var strUser = e.options[e.selectedIndex].text;
 
 
-			//window.location = "https://ps2projekt2017.azurewebsites.net/PS2Projekt/widoktabeli.jsp?choose="
-			//		+ strUser;
-			window.location = "http://localhost:8080/PS2Projekt/widoktabeli.jsp?choose=" + strUser;
+			window.location = "https://ps2projekt2017.azurewebsites.net/PS2Projekt/widoktabeli.jsp?choose="
+					+ strUser;
+			//window.location = "http://localhost:8080/PS2Projekt/widoktabeli.jsp?choose=" + strUser;
 
 
 			closeSocket();
