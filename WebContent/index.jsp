@@ -109,12 +109,12 @@
 	<!-- Script to utilise the WebSocket -->
 	<script type="text/javascript">
 	
-	/*$.ajax({
+	$.ajax({
 	    url: 'https://ps2projekt2017.azurewebsites.net/.auth/me',
 	    type: 'GET',
 	    dataType: "json",
 	    success: displayAll
-	});*/
+	});
 
 	function displayAll(data){
 

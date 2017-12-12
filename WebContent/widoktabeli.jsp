@@ -27,12 +27,12 @@
 	src=https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js></script>
 <script type="text/javascript">
 
-/*$.ajax({
+$.ajax({
     url: 'https://ps2projekt2017.azurewebsites.net/.auth/me',
     type: 'GET',
     dataType: "json",
     success: displayAll
-});*/
+});
 
 function displayAll(data){
 
